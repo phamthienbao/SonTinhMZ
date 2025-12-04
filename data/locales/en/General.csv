@@ -1,5 +1,6 @@
 Key,en
-picker_title   --- Language ---
+picker_title,   --- Select Language ---
+cmd_lang,Language
 lang_name,English
 game_title,Immortal Legend
 cmd_start,Start Journey

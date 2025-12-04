@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc [v1.0] Hệ thống đa ngôn ngữ & Giao diện chọn ngôn ngữ (KB Edition).
+ * @plugindesc [v2.5] Multi-language system & Language Picker interface (KB Edition).
  * @author KB (Dev)
  *
  * @help
@@ -9,148 +9,230 @@
  * | |/ /|  _ \  | |    ___   ___ __ _| (_)______ _ | |_(_) ___  _ __ 
  * | ' / | |_) | | |   / _ \ / __/ _` | | |_  / _` || __| |/ _ \| '_ \ 
  * | . \ |  _ <  | |__| (_) | (_| (_| | | |/ / (_| || |_| | (_) | | | |
- * |_|\_\|_| \_\ |_____\___/ \___\__,_|_|_/___\__,_| \__|_|\___/|_| |_|
+ * |_|\_\|_| \_\ |_____\___/ |___\__,_|_|_/___\__,_| \__|_|\___/|_| |_|
  * * ============================================================================
- * ## GIỚI THIỆU
+ * ## INTRODUCTION
  * ============================================================================
- * Plugin độc quyền giúp quản lý đa ngôn ngữ cho dự án game. 
- * Tích hợp tính năng "Language Picker" (Chọn ngôn ngữ) đẹp mắt khi New Game.
- * Tương thích hoàn toàn với KB_TitleCommands (MOG) để ẩn giao diện cũ.
+ * Exclusive plugin for managing multi-language projects. 
+ * Integrates the "Language Picker" feature (Select Language) when New Game is selected.
+ * Fully compatible with KB_TitleCommands to correctly hide the old UI elements.
+ *
+ * * Version V2.5: Updated Picker Language interface: Larger window, supports
+ * * Touch/Click on language change arrows and the confirmation OK button. OK button uses 
+ * * a custom image (requires img/system/Button_OK.png).
+ *
+ * * IMPORTANT SETUP ORDER:
+ * * 1. KB_CoreEngine.js (TOP)
+ * * 2. KB_TitleCommands.js
+ * * 3. KB_Localization.js (BOTTOM)
  *
  * ============================================================================
- * ## HƯỚNG DẪN CÀI ĐẶT (SETUP GUIDE)
+ * ## SETUP GUIDE
  * ============================================================================
- * * 1. CHUẨN BỊ DỮ LIỆU (DATA):
- * - Tạo file "Languages.csv" trong thư mục "data/" của game.
- * - Cấu trúc file CSV (Lưu encoding UTF-8):
- * Key,          vi,                 en
- * lang_name,    Tiếng Việt,         English
- * picker_title, --- Ngôn Ngữ ---,   --- Language ---
- * cmd_new,      Trò chơi mới,       New Game
+ * 1. INSTALLATION: 
+ * - Place KB_CoreEngine.js at the top.
+ * - Place KB_Localization.js below KB_CoreEngine.js and KB_TitleCommands.js.
  *
- * 2. CHUẨN BỊ ẢNH LÁ CỜ (IMAGES):
- * - Tạo ảnh lá cờ kích thước nhỏ (32x32 hoặc 48x32).
- * - Đặt tên file: flag_[MãNgônNgữ].png (Ví dụ: flag_vi.png, flag_en.png).
- * - Chép vào thư mục: img/system/
+ * 2. FOLDER & DATA PREPARATION:
+ * - Root folder: data/locales/
+ * - Create subfolders in "data/locales/" based on Language Codes (e.g., vi, en).
+ * - Place translation files (with the same name) into the corresponding folders.
+ * (Example: data/locales/vi/General.csv, data/locales/en/General.csv)
  *
- * 3. CẤU HÌNH (CONFIG):
- * - Bật "Show on Title" để hiện nút đổi ngôn ngữ ở menu chính.
- * - Bật "New Game Picker" để hiện bảng chọn ngôn ngữ khi bấm New Game.
- *
- * ============================================================================
- * ## LƯU Ý QUAN TRỌNG
- * ============================================================================
- * - Plugin này tự động ẩn các nút hình ảnh của MOG/KB Title khi bảng chọn
- * ngôn ngữ hiện lên để tránh rối mắt.
- * - Hệ thống Cache thông minh giúp game không bị lag khi dịch thuật.
+ * 3. PLUGIN MANAGER CONFIGURATION:
+ * - **Available Locales**: Enter the language codes (e.g., vi, en).
+ * - **Data Type**: Select the file type you use (CSV or JSON).
+ * - **Data Files**: Enter the NAMES of the data files (e.g., General, Quests). DO NOT include .csv or .json extension.
+ * * 4. FLAG & OK BUTTON IMAGE PREPARATION:
+ * - Flag image: flag_[LanguageCode].png (Example: flag_vi.png).
+ * - **OK Button Image**: Button_OK.png
+ * - Copy both into the folder: img/system/
  *
  * ============================================================================
- * @param --- Cấu Hình Chung ---
+ * @param --- Language Configuration ---
  * @default
  *
  * @param Default Language
- * @text Ngôn ngữ mặc định
- * @desc Mã ngôn ngữ khởi chạy lần đầu (vi, en, jp...).
+ * @text Default Language
+ * @desc The language code to run on first launch (vi, en, jp...).
  * @default vi
  *
- * @param --- Màn Hình Title ---
+ * @param Available Locales
+ * @text Available Language Codes
+ * @desc List of available language codes, separated by commas (Example: vi, en, jp).
+ * @default vi, en
+ *
+ * @param --- Data Configuration ---
+ * @default
+ *
+ * @param Data Root Folder
+ * @text Root Folder
+ * @desc The root folder containing the language folders. (Default: locales)
+ * @default locales
+ *
+ * @param Data Type
+ * @text Data File Type
+ * @desc Select the data file type to load. (CSV or JSON)
+ * @type select
+ * @option CSV
+ * @option JSON
+ * @default CSV
+ *
+ * @param Data Files
+ * @text Common Data File Names
+ * @desc Enter the NAMES of the data files, separated by commas (Example: General, Quests). DO NOT include .csv/.json extension.
+ * @default Languages
+ * @type string
+ *
+ * @param --- UI Features ---
  * @default
  *
  * @param Show on Title
- * @text Nút Ngôn ngữ (Menu)
- * @desc Hiển thị dòng lệnh "Ngôn ngữ" (Language) ở menu chính?
+ * @text Language Command (Title Menu)
+ * @desc Display the "Language" command line in the main menu?
+ * @type boolean
+ * @default true
+ *
+ * @param Show in Options
+ * @text Language Option (Options Menu)
+ * @desc Display the "Language" option in the Options Menu?
  * @type boolean
  * @default true
  *
  * @param New Game Picker
- * @text Bảng Chọn khi New Game
- * @desc Hiển thị giao diện chọn ngôn ngữ + lá cờ khi bấm New Game?
+ * @text Picker on New Game
+ * @desc Display the language selection interface + flag when New Game is pressed?
  * @type boolean
  * @default true
  */
 
+// Requires KB_CoreEngine.js to be enabled and placed above.
+if (!Imported.KB_Core) {
+    throw new Error("This plugin requires KB_CoreEngine.js to work! Please place it above.");
+}
+
 (() => {
     const pluginName = "KB_Localization";
     const params = PluginManager.parameters(pluginName);
-    const showOnTitle = params['Show on Title'] === 'true';
-    const useNewGamePicker = params['New Game Picker'] === 'true';
+    
+    // --- PARAMETER RETRIEVAL AND PARSING ---
+    const dataRootFolder = params['Data Root Folder'] || 'locales';
+    const dataType = params['Data Type'].toUpperCase();
+    const fileExtension = dataType === 'CSV' ? '.csv' : '.json';
+    
+    const dataFilesStr = params['Data Files'] || 'Languages';
+    const localesStr = params['Available Locales'] || 'vi,en';
+    
+    // Splits into an array, removes spaces, and adds file extensions
+    const dataFiles = dataFilesStr.split(',').map(f => f.trim()).filter(f => f.length > 0).map(f => f + fileExtension);
+    const availableLocales = localesStr.split(',').map(f => f.trim()).filter(f => f.length > 0);
+
+    const showOnTitle = KB.Utils.isTrue(params['Show on Title']);
+    const showInOptions = KB.Utils.isTrue(params['Show in Options']);
+    const useNewGamePicker = KB.Utils.isTrue(params['New Game Picker']);
 
     // --- 1. CORE MANAGER ---
     class KB_LocalizationManager {
         constructor() {
             this._locale = params['Default Language'] || 'vi';
-            this._data = {
-                "vi": { "lang_name": "Tiếng Việt" },
-                "en": { "lang_name": "English" }
-            };
-            this._cache = {};
+            this._data = {}; // Translation data
+            this._cache = {}; // Cache for process(text) function
+            this._availableLocales = availableLocales;
+            // Initialize basic locales to prevent errors in getText
+            this._availableLocales.forEach(locale => {
+                if (!this._data[locale]) this._data[locale] = {};
+            });
             this.loadData();
         }
 
         get locale() { return this._locale; }
 
         loadData() {
-            this.loadCSV('data/Languages.csv');
-            this.loadJSON('data/Languages.json');
+            // Iterate through all available locales to load files
+            this._availableLocales.forEach(locale => {
+                dataFiles.forEach(fileName => {
+                    // Construct file path: data/[Data Root Folder]/[locale]/[fileName]
+                    const url = `data/${dataRootFolder}/${locale}/${fileName}`;
+                    if (dataType === 'CSV') {
+                        this.loadCSV(url, locale);
+                    } else if (dataType === 'JSON') {
+                        this.loadJSON(url, locale);
+                    }
+                });
+            });
         }
 
-        loadJSON(url) {
+        loadJSON(url, locale) {
             const xhr = new XMLHttpRequest();
             xhr.open('GET', url);
             xhr.overrideMimeType('application/json');
             xhr.onload = () => {
                 if (xhr.status < 400) {
-                    try { 
-                        const jsonData = JSON.parse(xhr.responseText);
-                        this.mergeData(jsonData);
-                    } catch (e) {}
+                    // Use safe KB.Utils.parseJSON
+                    const jsonData = KB.Utils.parseJSON(xhr.responseText, null, `Localization JSON: ${url}`);
+                    if (jsonData) {
+                        this.mergeData(jsonData, locale);
+                    }
                 }
             };
             xhr.send();
         }
 
-        loadCSV(url) {
+        loadCSV(url, locale) {
             const xhr = new XMLHttpRequest();
             xhr.open('GET', url);
             xhr.onload = () => {
-                if (xhr.status < 400) this.parseCSV(xhr.responseText);
+                if (xhr.status < 400) this.parseCSV(xhr.responseText, locale);
             };
             xhr.send();
         }
-
-        mergeData(newData) {
-            for (const lang in newData) {
-                if (!this._data[lang]) this._data[lang] = {};
-                Object.assign(this._data[lang], newData[lang]);
-            }
+        
+        // Merge new data into the correct locale
+        mergeData(newLocaleData, locale) {
+            if (!this._data[locale]) this._data[locale] = {};
+            // Merge key-value of the new file into the current locale
+            Object.assign(this._data[locale], newLocaleData);
             this._cache = {};
         }
 
-        parseCSV(text) {
+        // Read CSV and merge into corresponding locales
+        parseCSV(text, targetLocale) {
             const lines = text.trim().split(/\r?\n/);
             if (lines.length < 2) return;
             if (lines[0].charCodeAt(0) === 0xFEFF) lines[0] = lines[0].substr(1);
 
             const headers = this.parseCSVLine(lines[0]);
-            for (let j = 1; j < headers.length; j++) {
-                const code = headers[j].trim();
-                if (!this._data[code]) this._data[code] = {};
+            
+            // Find the index of the target language column (targetLocale)
+            const targetIndex = headers.findIndex(h => h.trim() === targetLocale);
+            let valueIndex;
+
+            if (targetIndex !== -1) {
+                // If the target language column is found in the header, use it
+                valueIndex = targetIndex;
+            } else if (headers.length >= 2) {
+                // If not found, assume the file only has 2 columns: Key (0) and Value (1)
+                valueIndex = 1;
+            } else {
+                return; // Too few columns, skip
             }
+            
+            if (!this._data[targetLocale]) this._data[targetLocale] = {};
+            
             for (let i = 1; i < lines.length; i++) {
                 const row = this.parseCSVLine(lines[i]);
                 if (row.length < 2) continue;
                 const key = row[0].trim();
-                for (let j = 1; j < row.length; j++) {
-                    const code = headers[j] ? headers[j].trim() : null;
-                    if (code && this._data[code]) {
-                        let val = row[j] || "";
-                        val = val.replace(/^"|"$/g, '').replace(/""/g, '"');
-                        this._data[code][key] = val;
-                    }
-                }
+                
+                // Get value from the valueIndex column
+                let val = row[valueIndex] || "";
+                val = val.replace(/^"|"$/g, '').replace(/""/g, '"');
+                this._data[targetLocale][key] = val;
+                
             }
             this._cache = {};
         }
+
 
         parseCSVLine(text) {
             const res = [];
@@ -171,6 +253,7 @@
                 this._locale = locale;
                 this._cache = {}; 
                 ConfigManager.save();
+                // Refresh UI when language changes
                 if (SceneManager._scene) {
                     const wins = SceneManager._scene._windowLayer.children;
                     wins.forEach(w => {
@@ -181,7 +264,7 @@
         }
 
         cycleLanguage(reverse = false) {
-            const keys = Object.keys(this._data);
+            const keys = this._availableLocales; // Use list from config
             const valid = keys.filter(k => this._data[k] && typeof this._data[k] === 'object');
             if (valid.length > 0) {
                 let idx = valid.indexOf(this._locale);
@@ -196,6 +279,7 @@
 
         getText(key) {
             const dict = this._data[this._locale];
+            // Return value if found, otherwise return key
             return (dict && dict[key]) ? dict[key] : key;
         }
 
@@ -203,6 +287,8 @@
             if (typeof text !== 'string') return text;
             if (text.indexOf('{') === -1) return text;
             if (this._cache[text]) return this._cache[text];
+            
+            // Replace all strings {key} with the translated value
             const result = text.replace(/\{(.*?)\}/g, (match, key) => {
                 return this.getText(key.trim());
             });
@@ -210,8 +296,6 @@
             return result;
         }
     }
-
-    window.KBLocalization = new KB_LocalizationManager();
 
     // --- 2. INTEGRATION ---
     const _Window_Base_convertEscapeCharacters = Window_Base.prototype.convertEscapeCharacters;
@@ -240,80 +324,127 @@
         if (config.locale) KBLocalization.setLanguage(config.locale);
     };
 
-    const _Window_Options_addGeneralOptions = Window_Options.prototype.addGeneralOptions;
-    Window_Options.prototype.addGeneralOptions = function() {
-        _Window_Options_addGeneralOptions.call(this);
-        this.addCommand('{cmd_lang}', 'locale');
-    };
+    if (showInOptions) {
+        const _Window_Options_addGeneralOptions = Window_Options.prototype.addGeneralOptions;
+        Window_Options.prototype.addGeneralOptions = function() {
+            _Window_Options_addGeneralOptions.call(this);
+            // Command name translated from {cmd_lang} will display in the left column
+            this.addCommand('{cmd_lang}', 'locale');
+        };
+        
+        // NOTE: Must save the original statusText function
+        const _Window_Options_statusText = Window_Options.prototype.statusText;
 
-    const _Window_Options_statusText = Window_Options.prototype.statusText;
-    Window_Options.prototype.statusText = function(index) {
-        if (this.commandSymbol(index) === 'locale') {
-            const name = KBLocalization.getText('lang_name');
-            return name !== 'lang_name' ? name : KBLocalization.locale.toUpperCase();
-        }
-        return _Window_Options_statusText.call(this, index);
-    };
+        // Override statusText to only display the VALUE (Language Name)
+        Window_Options.prototype.statusText = function(index) {
+            if (this.commandSymbol(index) === 'locale') {
+                const name = KBLocalization.getText('lang_name');
+                // Display language name, or language code (uppercase) if name not found
+                return name !== 'lang_name' ? name : KBLocalization.locale.toUpperCase();
+            }
+            // Call original function for other Options commands (Volume, etc.)
+            return _Window_Options_statusText.call(this, index);
+        };
 
-    const _Window_Options_processOk = Window_Options.prototype.processOk;
-    Window_Options.prototype.processOk = function() {
-        if (this.commandSymbol(this.index()) === 'locale') {
-            KBLocalization.cycleLanguage();
-            SoundManager.playOk();
-            this.refresh();
-            return;
-        }
-        _Window_Options_processOk.call(this);
-    };
-    
-    const _Window_Options_cursorRight = Window_Options.prototype.cursorRight;
-    Window_Options.prototype.cursorRight = function(wrap) {
-        if (this.commandSymbol(this.index()) === 'locale') {
-            KBLocalization.cycleLanguage();
-            SoundManager.playCursor();
-            this.refresh();
-            return;
-        }
-        _Window_Options_cursorRight.call(this, wrap);
-    };
-    
-    const _Window_Options_cursorLeft = Window_Options.prototype.cursorLeft;
-    Window_Options.prototype.cursorLeft = function(wrap) {
-        if (this.commandSymbol(this.index()) === 'locale') {
-            KBLocalization.cycleLanguage(true); 
-            SoundManager.playCursor();
-            this.refresh();
-            return;
-        }
-        _Window_Options_cursorLeft.call(this, wrap);
-    };
+        const _Window_Options_processOk = Window_Options.prototype.processOk;
+        Window_Options.prototype.processOk = function() {
+            if (this.commandSymbol(this.index()) === 'locale') {
+                KBLocalization.cycleLanguage();
+                SoundManager.playOk();
+                this.refresh();
+                return;
+            }
+            _Window_Options_processOk.call(this);
+        };
+        
+        const _Window_Options_cursorRight = Window_Options.prototype.cursorRight;
+        Window_Options.prototype.cursorRight = function(wrap) {
+            if (this.commandSymbol(this.index()) === 'locale') {
+                KBLocalization.cycleLanguage();
+                SoundManager.playCursor();
+                this.refresh();
+                return;
+            }
+            _Window_Options_cursorRight.call(this, wrap);
+        };
+        
+        const _Window_Options_cursorLeft = Window_Options.prototype.cursorLeft;
+        Window_Options.prototype.cursorLeft = function(wrap) {
+            if (this.commandSymbol(this.index()) === 'locale') {
+                KBLocalization.cycleLanguage(true); 
+                SoundManager.playCursor();
+                this.refresh();
+                return;
+            }
+            _Window_Options_cursorLeft.call(this, wrap);
+        };
+    }
 
-    // --- 4. LANGUAGE PICKER WINDOW ---
+    // --- 4. LANGUAGE PICKER WINDOW (MODIFIED) ---
     class Window_KBPicker extends Window_Base {
         constructor(rect) {
             super(rect);
             this.opacity = 255;
             this.hide();
             this.deactivate();
+            // Initialize Rectangle objects to store positions
+            this._leftArrowRect = new Rectangle(0, 0, 0, 0);
+            this._rightArrowRect = new Rectangle(0, 0, 0, 0);
+            this._okButtonRect = new Rectangle(0, 0, 0, 0);
+            this._okBitmap = null; 
+            this._assetsLoading = false; // Flag to check loading status to prevent infinite loops
         }
 
         update() {
             super.update();
             if (this.active) {
+                // Handle Input via keys (keyboard/gamepad)
                 if (Input.isRepeated('right')) {
-                    SoundManager.playCursor();
-                    KBLocalization.cycleLanguage();
-                    this.refresh();
+                    this.cycleLang(false);
                 } else if (Input.isRepeated('left')) {
-                    SoundManager.playCursor();
-                    KBLocalization.cycleLanguage(true);
-                    this.refresh();
+                    this.cycleLang(true);
                 } else if (Input.isTriggered('ok')) {
                     SoundManager.playOk();
                     this.processOk();
                 } else if (Input.isTriggered('cancel') || Input.isTriggered('escape')) {
                     SoundManager.playCancel();
                     this.processCancel();
+                }
+                this.processTouch(); // Handle touch/click
+            }
+        }
+        
+        cycleLang(reverse) {
+            KBLocalization.cycleLanguage(reverse);
+            SoundManager.playCursor();
+            this.refresh();
+        }
+        
+        // Fix: Replace canvasToLocalX with manual coordinate calculation
+        processTouch() {
+            if (TouchInput.isTriggered() || TouchInput.isRepeated()) {
+                
+                const globalX = TouchInput.x;
+                const globalY = TouchInput.y;
+                
+                // Convert global coordinates (screen) to local coordinates (contents area)
+                const x = globalX - this.x - this.padding; 
+                const y = globalY - this.y - this.padding;
+                
+                // Check click/touch on left arrow
+                if (this._leftArrowRect.contains(x, y)) {
+                    this.cycleLang(true);
+                }
+                
+                // Check click/touch on right arrow
+                else if (this._rightArrowRect.contains(x, y)) {
+                    this.cycleLang(false);
+                }
+                
+                // Check click/touch on OK button
+                else if (this._okButtonRect.contains(x, y)) {
+                    SoundManager.playOk();
+                    this.processOk();
                 }
             }
         }
@@ -323,50 +454,126 @@
             const width = this.contentsWidth();
             const lineHeight = this.lineHeight();
 
-            // Load Flag
+            // --- 1. Load Assets ---
             const locale = KBLocalization.locale;
-            const filename = "flag_" + locale;
-            const bitmap = ImageManager.loadSystem(filename);
+            const flagBitmap = ImageManager.loadSystem("flag_" + locale);
+            
+            // Load OK button image (Assumed file name is Button_OK.png)
+            if (!this._okBitmap) {
+                this._okBitmap = ImageManager.loadSystem("Button_OK");
+            }
+            
+            // Listener to ensure redrawing when image is finished loading
+            const isFlagReady = flagBitmap.isReady();
+            const isOkReady = this._okBitmap.isReady();
 
-            if (!bitmap.isReady()) {
-                bitmap.addLoadListener(() => {
-                    if (this.visible) this.refresh();
-                });
+            // Fix: Only add listener if loading AND no listener is active
+            if (!isFlagReady || !isOkReady) {
+                if (!this._assetsLoading) { 
+                    this._assetsLoading = true; // Mark that a listener has been added
+                    
+                    const callback = () => {
+                        this._assetsLoading = false; // Reset flag after completion
+                        if (this.visible) this.refresh();
+                    };
+                    
+                    if (!isFlagReady) flagBitmap.addLoadListener(callback);
+                    if (!isOkReady) this._okBitmap.addLoadListener(callback);
+                }
+            } else {
+                this._assetsLoading = false;
             }
 
             // Draw Header
             let title = KBLocalization.getText('picker_title');
-            if (title === 'picker_title') title = "---- Language ----";
+            if (title === 'picker_title') title = "---- Select Language ----";
             this.changeTextColor(ColorManager.systemColor());
             this.drawText(title, 0, 0, width, 'center');
             this.resetTextColor();
 
-            // Prepare Content
+            // --- 2. Draw Content (Flag + Name) ---
             const langName = KBLocalization.getText('lang_name');
             const arrowLeft = "◀ ";
             const arrowRight = " ▶";
-            
-            const nameWidth = this.textWidth(langName);
-            const flagWidth = bitmap.isReady() ? bitmap.width + 10 : 0;
-            const arrowsWidth = this.textWidth(arrowLeft + arrowRight);
+            const okText = KBLocalization.getText('word_ok') !== 'word_ok' ? KBLocalization.getText('word_ok') : "OK";
+
+            const nameWidth = this.textWidth(langName) + 10;
+            const flagWidth = isFlagReady ? flagBitmap.width + 10 : 0;
+            const arrowsWidth = this.textWidth(arrowLeft) + this.textWidth(arrowRight);
             const totalWidth = arrowsWidth + flagWidth + nameWidth;
             
             let startX = (width - totalWidth) / 2;
             const contentY = lineHeight * 1.5;
-
+            const flagY = contentY + (lineHeight - (isFlagReady ? flagBitmap.height : lineHeight)) / 2;
+            
+            // Draw Left Arrow
             this.drawText(arrowLeft, startX, contentY, this.textWidth(arrowLeft), 'left');
+            // Record left arrow position for Touch
+            this._leftArrowRect.x = startX;
+            this._leftArrowRect.y = contentY;
+            this._leftArrowRect.width = this.textWidth(arrowLeft);
+            this._leftArrowRect.height = lineHeight;
             startX += this.textWidth(arrowLeft);
 
-            if (bitmap.isReady()) {
-                const flagY = contentY + (lineHeight - bitmap.height) / 2;
-                this.contents.blt(bitmap, 0, 0, bitmap.width, bitmap.height, startX, flagY);
+            // Draw Flag
+            if (isFlagReady) {
+                this.contents.blt(flagBitmap, 0, 0, flagBitmap.width, flagBitmap.height, startX, flagY);
                 startX += flagWidth;
             }
 
-            this.drawText(langName, startX, contentY, nameWidth, 'left');
+            // Draw Language Name
+            this.drawText(langName, startX, contentY, nameWidth, 'center');
             startX += nameWidth;
 
+            // Draw Right Arrow
             this.drawText(arrowRight, startX, contentY, this.textWidth(arrowRight), 'left');
+            // Record right arrow position for Touch
+            this._rightArrowRect.x = startX;
+            this._rightArrowRect.y = contentY;
+            this._rightArrowRect.width = this.textWidth(arrowRight);
+            this._rightArrowRect.height = lineHeight;
+
+            // --- 3. Draw CUSTOM OK Button (Using image) ---
+            
+            if (isOkReady) {
+                const buttonBitmap = this._okBitmap;
+                const buttonW = buttonBitmap.width;
+                const buttonH = buttonBitmap.height;
+                
+                // Center button
+                const okX = (width - buttonW) / 2;
+                const okY = contentY + lineHeight * 2;
+                
+                // Draw button image
+                this.contents.blt(buttonBitmap, 0, 0, buttonW, buttonH, okX, okY);
+                
+                // Draw OK text over the image (Use normal color for visibility)
+                this.changeTextColor(ColorManager.normalColor()); 
+                // Center OK text vertically to the button
+                this.drawText(okText, okX, okY + (buttonH - lineHeight) / 2, buttonW, 'center'); 
+                
+                // Record OK button position for Touch
+                this._okButtonRect.x = okX;
+                this._okButtonRect.y = okY;
+                this._okButtonRect.width = buttonW;
+                this._okButtonRect.height = buttonH;
+                
+                this.resetTextColor(); 
+            } else {
+                // Placeholder position data and draw temporary rectangle if image hasn't loaded
+                const buttonW = 180; 
+                const buttonH = lineHeight * 1.5;
+                const okX = (width - buttonW) / 2;
+                const okY = contentY + lineHeight * 2;
+                // Still draw temporarily so the OK button can be pressed even if the image hasn't loaded
+                this.contents.fillRect(okX, okY, buttonW, buttonH, ColorManager.dimColor2());
+                this.drawText(okText, okX, okY, buttonW, 'center');
+                
+                this._okButtonRect.x = okX;
+                this._okButtonRect.y = okY;
+                this._okButtonRect.width = buttonW;
+                this._okButtonRect.height = buttonH;
+            }
         }
 
         processOk() {
@@ -379,27 +586,38 @@
 
         setOkHandler(method) { this._okHandler = method; }
         setCancelHandler(method) { this._cancelHandler = method; }
+        
+        close() {
+            this.hide();
+        }
     }
 
-    // --- 5. SCENE TITLE UPDATE (FIX MOG NOT HIDING) ---
+    // --- Ensure Manager is initialized before any of its functions are called ---
+    if (!window.KBLocalization) {
+        window.KBLocalization = new KB_LocalizationManager();
+    }
     
-    // Thêm chức năng: Kiểm tra liên tục mỗi khung hình
-    const _Scene_Title_update = Scene_Title.prototype.update;
-    Scene_Title.prototype.update = function() {
-        _Scene_Title_update.call(this);
+    // --- 5. SCENE TITLE INTEGRATION (KB_TitleCommands Sync) ---
 
-        // Nếu bảng chọn ngôn ngữ đang hiện
-        if (this._langPicker && this._langPicker.visible) {
-            // Ép buộc ẩn ảnh MOG/KB
-            if (this._comSprites) {
-                this._comSprites.forEach(s => s.visible = false);
-            }
-            if (this._comCursor) {
-                this._comCursor.visible = false;
-            }
+    // ALIAS: Must run after KB_TitleCommands.js has created CommandWindow and Sprites
+    const _Scene_Title_createCommandWindow_alias = Scene_Title.prototype.createCommandWindow;
+    Scene_Title.prototype.createCommandWindow = function() {
+        _Scene_Title_createCommandWindow_alias.call(this);
+
+        // --- STORE REFERENCES FROM KB_TitleCommands ---
+        // Sprites are stored in this._TpictureCom[]
+        // Cursor is stored in this._cursor
+        
+        // Store Command reference
+        if (this._TpictureCom) {
+            this._comSprites = this._TpictureCom;
+        }
+        // Store Cursor reference
+        if (this._cursor) {
+            this._comCursor = this._cursor;
         }
     };
-
+    
     // --- 6. COMMAND INTEGRATION ---
 
     if (showOnTitle) {
@@ -420,15 +638,17 @@
 
     Scene_Title.prototype.createLanguagePicker = function() {
         const rect = this.languagePickerRect();
+        // Correct way to create Window_KBPicker to use the new rect
         this._langPicker = new Window_KBPicker(rect);
         this._langPicker.setOkHandler(this.onPickerOk.bind(this));
         this._langPicker.setCancelHandler(this.onPickerCancel.bind(this));
         this.addWindow(this._langPicker);
     };
 
+    // Change Picker Language window size as requested (Larger)
     Scene_Title.prototype.languagePickerRect = function() {
-        const w = 500;
-        const h = 180;
+        const w = 600; // New width
+        const h = 200; // New height to contain the OK button
         const x = (Graphics.boxWidth - w) / 2;
         const y = (Graphics.boxHeight - h) / 2;
         return new Rectangle(x, y, w, h);
@@ -440,26 +660,36 @@
             this._commandWindow.hide();
             this._commandWindow.deactivate();
 
-            // Ẩn Background (Đen màn hình)
+            // Hide Background and Title Sprite (Black screen)
             if (this._backSprite1) this._backSprite1.opacity = 0;
             if (this._backSprite2) this._backSprite2.opacity = 0;
             if (this._gameTitleSprite) this._gameTitleSprite.opacity = 0;
 
-            // Hiện Picker
+            // --- HIDE KB_TitleCommands CONTROLS (Command Sprites and Cursor) ---
+            if (this._comSprites) {
+                this._comSprites.forEach(s => s.visible = false);
+            }
+            if (this._comCursor) {
+                this._comCursor.visible = false;
+            }
+
+            // Show Picker
             this._langPicker.refresh();
             this._langPicker.show();
             this._langPicker.activate();
             
-            // Lưu ý: Việc ẩn MOG Sprites sẽ được xử lý bởi hàm update() ở trên
-
         } else {
             _Scene_Title_commandNewGame.call(this);
         }
     };
 
     Scene_Title.prototype.onPickerOk = function() {
-        this._langPicker.close();
+        // 1. Close Picker
+        this._langPicker.hide();
         this._langPicker.deactivate();
+
+
+        // 2. Proceed to New Game
         DataManager.setupNewGame();
         this._commandWindow.close();
         this.fadeOutAll();
@@ -473,12 +703,12 @@
         this._commandWindow.show();
         this._commandWindow.activate();
 
-        // Hiện lại Background
+        // Restore Background and Title
         if (this._backSprite1) this._backSprite1.opacity = 255;
         if (this._backSprite2) this._backSprite2.opacity = 255;
         if (this._gameTitleSprite) this._gameTitleSprite.opacity = 255;
         
-        // Hiện lại MOG Sprites (update loop sẽ tự động thôi ẩn)
+        // --- RESTORE KB_TitleCommands CONTROLS ---
         if (this._comSprites) {
             this._comSprites.forEach(s => s.visible = true);
         }
@@ -487,9 +717,9 @@
         }
     };
 
-    const _Scene_Title_createCommandWindow = Scene_Title.prototype.createCommandWindow;
+    const _Scene_Title_createCommandWindow_handler = Scene_Title.prototype.createCommandWindow;
     Scene_Title.prototype.createCommandWindow = function() {
-        _Scene_Title_createCommandWindow.call(this);
+        _Scene_Title_createCommandWindow_handler.call(this);
         this._commandWindow.setHandler('language', this.commandLanguage.bind(this));
     };
 
