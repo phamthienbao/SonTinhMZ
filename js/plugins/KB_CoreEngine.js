@@ -65,5 +65,26 @@ KB.Versions.Core = "1.0.0";
     $.isTrue = function(param) {
         return String(param).toLowerCase() === "true";
     };
+    /**
+     * Kiểm tra xem một thư mục có tồn tại không và tạo nó nếu thiếu (Chỉ hoạt động trên NWJS/Game chạy thử).
+     * @param {string} dirPath - Đường dẫn đến thư mục (Ví dụ: './img/my_folder').
+     * @param {string} sourceName - Tên nơi gọi hàm (để dễ debug).
+     */
+    $.setDir = function(dirPath, sourceName) {
+        if (Utils.isNwjs()) {
+            const fs = require('fs');
+            // Kiểm tra xem thư mục có tồn tại không
+            if (!fs.existsSync(dirPath)) {
+                try {
+                    // Tạo thư mục
+                    fs.mkdirSync(dirPath);
+                    console.info(`[KB Core] Created missing directory: ${dirPath} (Source: ${sourceName})`);
+                } catch (e) {
+                    console.error(`[KB Core] Failed to create directory: ${dirPath} (Source: ${sourceName})`);
+                    console.error(e);
+                }
+            }
+        }
+    };
 
 })(KB.Utils);
