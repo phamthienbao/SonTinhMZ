@@ -4,100 +4,13 @@
 
 /*:
  * @target MZ
- * @plugindesc (v2.4) Fix sprite persistence: Force hide on any command confirmation.
+ * @plugindesc (v1.3) Adds image commands to the title screen instead of the default window.
  * @author KB
- * @base KB_Core
- * @orderAfter KB_Core
- * * @help  
- * =============================================================================
- * +++ KB - Title Picture Commands (v2.4) +++
- * =============================================================================
- * YÊU CẦU:
- * - Plugin này cần "KB_CoreEngine" nằm ở trên nó trong danh sách Plugin.
- * - Các file ảnh phải để trong thư mục: img/titles2/
- * * =============================================================================
- * HƯỚNG DẪN SỬ DỤNG:
- * =============================================================================
- * 1. Phase 1 (Press Start):
- * - Nếu bạn điền tên ảnh vào "Press Start Image": Sẽ hiện ảnh đó.
- * - Nếu bạn ĐỂ TRỐNG "Press Start Image": Sẽ hiện dòng text mặc định
- * "- PRESS ANY BUTTON -".
- * * 2. Các hình ảnh khác (Command, Cursor) vẫn giữ nguyên cách dùng cũ.
- *
- * =============================================================================
- *
- * @param ---<PHASE 1: PRESS START>---
- * @desc Cấu hình cho màn hình "Nhấn nút bất kỳ".
- *
- * @param Enable Phase 1
- * @text Enable Press Start
- * @desc Bật/Tắt màn hình chờ "Press Start".
- * @default true
- * @type boolean
- * @parent ---<PHASE 1: PRESS START>---
- *
- * @param Press Start Image
- * @text "Press Button" Image
- * @desc Tên file ảnh (trong img/titles2). ĐỂ TRỐNG nếu muốn hiện Text mặc định.
- * @default 
- * @parent ---<PHASE 1: PRESS START>---
- *
- * @param Press Start X
- * @desc Tọa độ X. (Nếu dùng Text mặc định thì hệ thống tự căn giữa, X này dùng để tinh chỉnh thêm).
- * @default 408
- * @type number
- * @parent ---<PHASE 1: PRESS START>---
- * * @param Press Start Y
- * @desc Tọa độ Y của ảnh hoặc dòng Text.
- * @default 400
- * @type number
- * @parent ---<PHASE 1: PRESS START>---
- *
- * @param Phase 1 Character
- * @text Phase 1 Image/Char
- * @desc Tên file ảnh nhân vật/overlay cho Phase 1 (trong img/titles2). Để trống nếu không dùng.
- * @parent ---<PHASE 1: PRESS START>---
- *
- * @param P1 Char X
- * @desc Tọa độ X của ảnh Phase 1.
- * @default 0
- * @type number
- * @min -2000
- * @parent ---<PHASE 1: PRESS START>---
- *
- * @param P1 Char Y
- * @desc Tọa độ Y của ảnh Phase 1.
- * @default 0
- * @type number
- * @min -2000
- * @parent ---<PHASE 1: PRESS START>---
- *
- * @param ---<PHASE 2: MAIN MENU>---
- * @desc Cấu hình cho màn hình menu chính.
- *
- * @param Phase 2 Character
- * @text Phase 2 Image/Char
- * @desc Tên file ảnh nhân vật/overlay cho Phase 2 (trong img/titles2). Để trống nếu không dùng.
- * @parent ---<PHASE 2: MAIN MENU>---
- *
- * @param P2 Char X
- * @desc Tọa độ X của ảnh Phase 2.
- * @default 0
- * @type number
- * @min -2000
- * @parent ---<PHASE 2: MAIN MENU>---
- *
- * @param P2 Char Y
- * @desc Tọa độ Y của ảnh Phase 2.
- * @default 0
- * @type number
- * @min -2000
- * @parent ---<PHASE 2: MAIN MENU>---
- *
- * @param ---<COMMAND SETTINGS>---
+ * @url 
+ * * @param ---<MAIN SETTINGS>---
  * @desc
  * * @param Animation Mode
- * @desc Hiệu ứng khi chọn lệnh. 0: None, 1: Pulse, 2: Shake
+ * @desc Set the command selection effect. 0: None, 1: Pulse, 2: Shake
  * @default 1
  * @type select
  * @option None
@@ -106,157 +19,171 @@
  * @value 1
  * @option Shake Effect
  * @value 2
- * @parent ---<COMMAND SETTINGS>---
+ * @parent ---<MAIN SETTINGS>---
  * * @param Left & Right Input
  * @text Support Horizontal Menu
- * @desc Cho phép dùng nút Trái/Phải để chọn lệnh.
+ * @desc Allows command selection using Right/Left keys (Supports horizontal menu).
  * @default true
  * @type boolean
- * @parent ---<COMMAND SETTINGS>---
+ * @parent ---<MAIN SETTINGS>---
  * * @param Shake Duration
- * @desc Thời gian rung (nếu Mode là 2).
+ * @desc Duration of the shake effect (if Animation Mode is 2).
  * @default 30
  * @type number
- * @parent ---<COMMAND SETTINGS>---
+ * @parent ---<MAIN SETTINGS>---
  * * @param Slide X-Axis
- * @desc Độ trượt X ban đầu khi hiện menu.
+ * @desc Initial X-offset for the slide-in animation.
  * @default -100
- * @min -2000
- * @parent ---<COMMAND SETTINGS>---
+ * @parent ---<MAIN SETTINGS>---
  * * @param Slide Y-Axis
- * @desc Độ trượt Y ban đầu khi hiện menu.
+ * @desc Initial Y-offset for the slide-in animation.
  * @default 0
- * @min -2000
- * @parent ---<COMMAND SETTINGS>---
+ * @parent ---<MAIN SETTINGS>---
  * * @param ---<CURSOR SETTINGS>---
  * @desc
  * * @param Cursor X-Axis
  * @text X-Axis
- * @desc Điều chỉnh vị trí ngang con trỏ.
+ * @desc Adjust the cursor's horizontal position (X-Offset).
  * @default 0
- * @min -2000
  * @parent ---<CURSOR SETTINGS>---
  *
  * @param Cursor Y-Axis
  * @text Y-Axis
- * @desc Điều chỉnh vị trí dọc con trỏ.
+ * @desc Adjust the cursor's vertical position (Y-Offset).
  * @default 5
- * @min -2000
  * @parent ---<CURSOR SETTINGS>---
  *
  * @param Cursor Visible
  * @text Visible
- * @desc Bật/Tắt hiển thị con trỏ.
+ * @desc Enable/disable cursor display.
  * @default true
  * @type boolean
  * @parent ---<CURSOR SETTINGS>---
  *
  * @param Cursor Wave Animation
  * @text Wave Animation
- * @desc Bật hiệu ứng trôi/lượn sóng cho con trỏ.
+ * @desc Enable a subtle wave/floating animation for the cursor.
  * @default true
  * @type boolean
  * @parent ---<CURSOR SETTINGS>---
  *
  * @param Cursor Rotation Animation
  * @text Rotation Animation
- * @desc Bật hiệu ứng xoay con trỏ.
+ * @desc Enable cursor rotation effect.
  * @default false
  * @type boolean
  * @parent ---<CURSOR SETTINGS>---
  *
  * @param Cursor Rotation Speed
  * @text Rotation Speed
- * @desc Tốc độ xoay.
+ * @desc Cursor rotation speed.
  * @default 0.05
  * @parent ---<CURSOR SETTINGS>---
  * * @param ---<COMMAND POSITIONS>---
  * * @param Command Pos 1
- * @desc Format: X,Y. Vị trí lệnh 1.
+ * @desc Format: X,Y. Position of command 1.
  * @default 180,440
  * @parent ---<COMMAND POSITIONS>---
  *
  * @param Command Pos 2
- * @desc Format: X,Y. Vị trí lệnh 2.
+ * @desc Format: X,Y. Position of command 2.
  * @default 350,440
  * @parent ---<COMMAND POSITIONS>---
  *
  * @param Command Pos 3
- * @desc Format: X,Y. Vị trí lệnh 3.
+ * @desc Format: X,Y. Position of command 3.
  * @default 520,440
  * @parent ---<COMMAND POSITIONS>---
  *
  * @param Command Pos 4
- * @desc Format: X,Y. Vị trí lệnh 4.
+ * @desc Format: X,Y. Position of command 4.
  * @default 690,440
  * @parent ---<COMMAND POSITIONS>---
  *
  * @param Command Pos 5
- * @desc Format: X,Y. Vị trí lệnh 5.
+ * @desc Format: X,Y. Position of command 5.
  * @default 345,498
  * @parent ---<COMMAND POSITIONS>--- 
  *
  * @param Command Pos 6
- * @desc Format: X,Y. Vị trí lệnh 6.
+ * @desc Format: X,Y. Position of command 6.
  * @default 345,530
  * @parent ---<COMMAND POSITIONS>---
+ *
+ * @param Command Pos 7
+ * @desc Format: X,Y. Position of command 7.
+ * @default 0,192
+ * @parent ---<COMMAND POSITIONS>---
+ *
+ * @param Command Pos 8
+ * @desc Format: X,Y. Position of command 8.
+ * @default 0,224
+ * @parent ---<COMMAND POSITIONS>---
+ *
+ * @param Command Pos 9
+ * @desc Format: X,Y. Position of command 9.
+ * @default 0,256
+ * @parent ---<COMMAND POSITIONS>---
+ *
+ * @param Command Pos 10
+ * @desc Format: X,Y. Position of command 10.
+ * @default 0,288
+ * @parent ---<COMMAND POSITIONS>---
+ *
+ * @help  
+ * =============================================================================
+ * +++ KB - Title Picture Commands (v1.3) +++
+ * By KB 
+ * https://yoururl.com
+ * =============================================================================
+ * Adds image commands to the title screen instead of the default window.
+ * The following image files are required:
+ *
+ * Command_0.png, Command_1.png, Command_2.png , Command_3.png ... 
+ *
+ * Save the images in the folder:
+ *
+ * img/titles2/
+ * ============================================================================= 
+ * A cursor image is also required.
+ *
+ * Cursor.png
+ *
+ * ============================================================================= 
+ * * HISTORY
+ * =============================================================================
+ * (v1.3) - Updated sort logic for Z-ordering.   
+ * (v1.2) - Fixed command selection during scene fading transitions. 
+ * (v1.1) - Fixed an issue where the default command window appeared on high resolutions.
  *
  */
 
 //=============================================================================
 // ** PLUGIN PARAMETERS
 //=============================================================================
-var Imported = Imported || {};
-Imported.KB_TitleCommands = true;
+    var Imported = Imported || {};
+    Imported.KB_TitleCommands = true;
+    var KB = KB || {};
 
-if (Imported.KB_Core && KB.Utils) {
-    // Safe
-} else {
-    console.warn("KB_TitleCommands requires KB_CoreEngine.");
-}
+  	KB.parameters = PluginManager.parameters('KB_TitleCommands');
+	KB.title_comMode = Number(KB.parameters['Animation Mode'] || 2);
+    KB.title_shakeDuration = Number(KB.parameters['Shake Duration'] || 30);
+	
+	KB.title_slideXaxis = Number(KB.parameters['Slide X-Axis'] || -100);
+	KB.title_slideYaxis = Number(KB.parameters['Slide Y-Axis'] || 0);	
+	KB.title_sideInput = String(KB.parameters['Left & Right Input'] || "true");
 
-var KB = KB || {};
-KB.parameters = PluginManager.parameters('KB_TitleCommands');
-
-// --- Helper ---
-KB.getParam = function(paramName, defaultVal) {
-    return KB.parameters[paramName] || defaultVal;
-};
-
-// --- PHASE 1 SETTINGS ---
-KB.title_phase1_enable = String(KB.parameters['Enable Phase 1'] || "true") === "true";
-KB.title_pressStartImg = String(KB.parameters['Press Start Image'] || ""); 
-KB.title_pressStartX = Number(KB.parameters['Press Start X'] || 408);
-KB.title_pressStartY = Number(KB.parameters['Press Start Y'] || 400);
-
-KB.title_p1_charImg = String(KB.parameters['Phase 1 Character'] || "");
-KB.title_p1_charX = Number(KB.parameters['P1 Char X'] || 0);
-KB.title_p1_charY = Number(KB.parameters['P1 Char Y'] || 0);
-
-// --- PHASE 2 SETTINGS ---
-KB.title_p2_charImg = String(KB.parameters['Phase 2 Character'] || "");
-KB.title_p2_charX = Number(KB.parameters['P2 Char X'] || 0);
-KB.title_p2_charY = Number(KB.parameters['P2 Char Y'] || 0);
-
-// --- COMMAND SETTINGS ---
-KB.title_comMode = Number(KB.parameters['Animation Mode'] || 1);
-KB.title_shakeDuration = Number(KB.parameters['Shake Duration'] || 30);
-KB.title_slideXaxis = Number(KB.parameters['Slide X-Axis'] || -100);
-KB.title_slideYaxis = Number(KB.parameters['Slide Y-Axis'] || 0);	
-KB.title_sideInput = String(KB.parameters['Left & Right Input'] || "true");
-
-// --- CURSOR SETTINGS ---
-KB.title_cursorVisible = String(KB.parameters['Cursor Visible'] || "true");
-KB.title_cursorSlide = String(KB.parameters['Cursor Wave Animation'] || "true");
-KB.title_cursorX = Number(KB.parameters['Cursor X-Axis'] || 0);
-KB.title_cursorY = Number(KB.parameters['Cursor Y-Axis'] || 5);	
-KB.title_cursorRot = String(KB.parameters['Cursor Rotation Animation'] || "false");
-KB.title_cursorRotSpeed = Number(KB.parameters['Cursor Rotation Speed'] || 0.05);
-
-KB.title_com_pos = [];
-for (var i = 0; i < 10; i++) {
-    KB.title_com_pos[i] = (KB.parameters['Command Pos ' + String(i + 1)] || null);
-};	
+	KB.title_cursorVisible = String(KB.parameters['Cursor Visible'] || "true");
+	KB.title_cursorSlide = String(KB.parameters['Cursor Wave Animation'] || "true");
+	KB.title_cursorX = Number(KB.parameters['Cursor X-Axis'] || 0);
+	KB.title_cursorY = Number(KB.parameters['Cursor Y-Axis'] || 5);	
+	KB.title_cursorRot = String(KB.parameters['Cursor Rotation Animation'] || "false");
+	KB.title_cursorRotSpeed = Number(KB.parameters['Cursor Rotation Speed'] || 0.05);
+	
+	KB.title_com_pos = [];
+	for (var i = 0; i < 10; i++) {
+		KB.title_com_pos[i] = (KB.parameters['Command Pos ' + String(i + 1)] || null);
+	};	
 
 //=============================================================================
 // ■■■ Scene Title  ■■■
@@ -265,82 +192,31 @@ for (var i = 0; i < 10; i++) {
 //==============================
 // ♦ ALIAS ♦  Create
 //==============================
-var _KB_titleCom_create = Scene_Title.prototype.create;
+var _KB_titleCom_ccreate = Scene_Title.prototype.create;
 Scene_Title.prototype.create = function() {
-    _KB_titleCom_create.call(this);
-    this._titlePhase = KB.title_phase1_enable ? 0 : 1;
-    this.createPhaseGraphics();
-    this.refreshPhaseVisibility();
+	_KB_titleCom_ccreate.call(this);
+	if (this._titleField3) {this._titleField3.children.sort((a, b) => a.z - b.z)}
 };
 
-//==============================
+//================================
 // ♦ ALIAS ♦  createCommandWindow
-//==============================
+//================================
 var _KB_titleCom_createCommandWindow = Scene_Title.prototype.createCommandWindow;
 Scene_Title.prototype.createCommandWindow = function() {
-    _KB_titleCom_createCommandWindow.call(this);
-    
-    if (!this._titleField3) { this.createTitleField3(); }
-    
-    this.createTitlePictureCommands();
-    this._sideInput = String(KB.title_sideInput) == "true";
-    
-    if (String(KB.title_cursorVisible) == "true") {
-        this.createCursorCommand();
-    }
-
-    if (this._titlePhase === 0) {
-        this._commandWindow.deactivate();
-        this._commandWindow.visible = false;
-    }
+	_KB_titleCom_createCommandWindow.call(this);
+	if (!this._titleField3) {this.createTitleField3()};
+	this.createTitlePictureCommands();
+	this._sideInput = String(KB.title_sideInput) == "true" ? true : false;
+	if (String(KB.title_cursorVisible) == "true") {this.createCursorCommand()};
 };
 
-//==============================
-// ♦ OVERRIDE ♦  isBusy
-//==============================
-var _KB_titleCom_isBusy = Scene_Title.prototype.isBusy;
-Scene_Title.prototype.isBusy = function() {
-    return _KB_titleCom_isBusy.call(this) || this._titlePhase === 0;
-};
-
-//==============================
-// ♦ NEW ♦  Hide All Elements
-//==============================
-Scene_Title.prototype.hideAllCustomSprites = function() {
-    if (this._phase1Container) this._phase1Container.visible = false;
-    if (this._titleField3) this._titleField3.visible = false;
-    if (this._p1Character) this._p1Character.visible = false;
-    if (this._p2Character) this._p2Character.visible = false;
-    if (this._pressStartSprite) this._pressStartSprite.visible = false;
-};
-
-//==============================
-// ♦ ALIAS ♦  Window Title Command - Process OK
-// ** CRITICAL FIX: Hide sprites immediately when OK is pressed on ANY command
-//==============================
-var _KB_Window_TitleCommand_processOk = Window_TitleCommand.prototype.processOk;
-Window_TitleCommand.prototype.processOk = function() {
-    // Gọi hàm gốc để thực thi lệnh (New Game, Options...)
-    _KB_Window_TitleCommand_processOk.call(this);
-    
-    // Ngay lập tức ẩn toàn bộ hình ảnh Custom của Scene Title
-    if (SceneManager._scene instanceof Scene_Title && SceneManager._scene.hideAllCustomSprites) {
-        SceneManager._scene.hideAllCustomSprites();
-    }
-};
-
-//==============================
+//================================
 // ♦ ALIAS ♦  update
-//==============================
-var _KB_titleCom_update = Scene_Title.prototype.update;
+//================================
+var _KB_titleCom_scnTittle_update = Scene_Title.prototype.update;
 Scene_Title.prototype.update = function() {
-    _KB_titleCom_update.call(this);
-    
-    if (this._titlePhase === 0) {
-        this.updatePhase0();
-    } else {
-        this.updatePicCommands();
-    }
+	_KB_titleCom_scnTittle_update.call(this);
+    this.updatePicCommands();
 };
 
 //==============================
@@ -348,118 +224,12 @@ Scene_Title.prototype.update = function() {
 //==============================
 Scene_Title.prototype.createTitleField3 = function() {
     this._titleField3 = new Sprite();
-    this._titleField3.z = 200;
+	this._titleField3.z = 200;
     this.addChild(this._titleField3);
 };
 
 //==============================
-// * Create Phase Graphics
-//==============================
-Scene_Title.prototype.createPhaseGraphics = function() {
-    // --- Phase 1 Container ---
-    this._phase1Container = new Sprite();
-    this.addChild(this._phase1Container);
-
-    // 1. Phase 1 Character
-    if (KB.title_p1_charImg) {
-        this._p1Character = new Sprite(ImageManager.loadTitle2(KB.title_p1_charImg));
-        this._p1Character.x = KB.title_p1_charX;
-        this._p1Character.y = KB.title_p1_charY;
-        this._phase1Container.addChild(this._p1Character);
-    }
-
-    // 2. Press Start Sprite
-    this._pressStartSprite = new Sprite();
-    this._pressStartSprite.anchor.x = 0.5;
-    this._pressStartSprite.anchor.y = 0.5;
-    
-    if (KB.title_pressStartImg && KB.title_pressStartImg !== "") {
-        this._pressStartSprite.bitmap = ImageManager.loadTitle2(KB.title_pressStartImg);
-        this._pressStartSprite.x = KB.title_pressStartX;
-        this._pressStartSprite.y = KB.title_pressStartY;
-    } else {
-        var width = Graphics.width; 
-        var height = 64;
-        var bitmap = new Bitmap(width, height);
-        bitmap.fontFace = $gameSystem.mainFontFace();
-        bitmap.fontSize = 32;
-        bitmap.textColor = "#ffffff";
-        bitmap.outlineColor = "rgba(0, 0, 0, 0.6)";
-        bitmap.outlineWidth = 4;
-        bitmap.drawText("- PRESS ANY BUTTON -", 0, 0, width, height, "center");
-        this._pressStartSprite.bitmap = bitmap;
-        this._pressStartSprite.x = (KB.title_pressStartX === 408) ? Graphics.width / 2 : KB.title_pressStartX; 
-        this._pressStartSprite.y = KB.title_pressStartY;
-    }
-    
-    this._phase1Container.addChild(this._pressStartSprite);
-
-
-    // --- Phase 2 Graphics ---
-    if (KB.title_p2_charImg) {
-        this._p2Character = new Sprite(ImageManager.loadTitle2(KB.title_p2_charImg));
-        this._p2Character.x = KB.title_p2_charX;
-        this._p2Character.y = KB.title_p2_charY;
-        this._p2Character.z = 10;
-        if (!this._titleField3) { this.createTitleField3(); }
-        this._titleField3.addChildAt(this._p2Character, 0); 
-    }
-};
-
-//==============================
-// * Update Phase 0
-//==============================
-Scene_Title.prototype.updatePhase0 = function() {
-    if (this._pressStartSprite) {
-        this._pressStartSprite.opacity = 150 + Math.sin(Graphics.frameCount * 0.1) * 105;
-    }
-
-    if (this._commandWindow.active) {
-        this._commandWindow.deactivate();
-    }
-
-    if (Input.isTriggered('ok') || Input.isTriggered('cancel') || TouchInput.isTriggered() || Input.dir4 !== 0) {
-        this.transitionToPhase2();
-    }
-};
-
-//==============================
-// * Transition Logic
-//==============================
-Scene_Title.prototype.transitionToPhase2 = function() {
-    SoundManager.playOk();
-    
-    Input.clear();
-    TouchInput.clear();
-
-    this._titlePhase = 1;
-    this.refreshPhaseVisibility();
-    
-    this._commandWindow.activate();
-    
-    if (this._TpictureCom) {
-        this._TpictureCom.forEach(sprite => sprite.getData());
-    }
-};
-
-//==============================
-// * Refresh Visibility
-//==============================
-Scene_Title.prototype.refreshPhaseVisibility = function() {
-    if (this._titlePhase === 0) {
-        if (this._phase1Container) this._phase1Container.visible = true;
-        if (this._titleField3) this._titleField3.visible = false;
-        if (this._cursor) this._cursor.visible = false;
-    } else {
-        if (this._phase1Container) this._phase1Container.visible = false;
-        if (this._titleField3) this._titleField3.visible = true;
-        if (this._cursor && String(KB.title_cursorVisible) == "true") this._cursor.visible = true;
-    }
-};
-
-
-//==============================
-// * Standard Functions (No changes below)
+// * createTitlePictureCommands
 //==============================
 Scene_Title.prototype.createTitlePictureCommands = function() {
 	this._picComE = false;
@@ -474,6 +244,9 @@ Scene_Title.prototype.createTitlePictureCommands = function() {
  	this._commandWindow.x = -(Graphics.width * 2);	
 };
 
+//==============================
+// * Create Cursor Command
+//==============================
 Scene_Title.prototype.createCursorCommand = function() {
 	this._cursorSlide = [0,0,0,false];
 	if (String(KB.title_cursorSlide) == "true") {this._cursorSlide[3] = true};
@@ -490,6 +263,9 @@ Scene_Title.prototype.createCursorCommand = function() {
 	this._titleField3.addChild(this._cursor);
 };
 
+//==============================
+// * update Title Cursor
+//==============================
 Scene_Title.prototype.updateTitleCursor = function() {
 	 if (this._cursorSlide[3]) {this.updateCursorSlide()};
 	 if (this._cursor.rot[0]) {this.updateCursorRotation()}; 
@@ -500,14 +276,23 @@ Scene_Title.prototype.updateTitleCursor = function() {
 	 this._cursor.y = this.cursorMoveto(this._cursor.y, ny, 10);
 };
 
+//==============================
+// * Com Sprite
+//==============================
 Scene_Title.prototype.comSprite = function() {
     return this._TpictureCom[this._commandWindow._index];
 };
 
+//==============================
+// * Uodate Cursor Rotation
+//==============================
 Scene_Title.prototype.updateCursorRotation = function() {
     this._cursor.rotation += this._cursor.rot[1];
 };
 
+//==============================
+// * update Cursor Slide
+//==============================
 Scene_Title.prototype.updateCursorSlide = function() {
      this._cursorSlide[1] ++
 	 if (this._cursorSlide[1] < 3) {return};
@@ -523,6 +308,9 @@ Scene_Title.prototype.updateCursorSlide = function() {
 	 };
 };
 
+//==============================
+// * Sprite Move To
+//==============================
 Scene_Title.prototype.cursorMoveto = function(value,real_value,speed) {
 	if (value == real_value) {return value};
 	var dnspeed = 5 + (Math.abs(value - real_value) / speed);
@@ -534,6 +322,9 @@ Scene_Title.prototype.cursorMoveto = function(value,real_value,speed) {
 	return Math.floor(value);
 };
 
+//==============================
+// * checkTPicCom
+//==============================
 Scene_Title.prototype.checkTPicCom = function() {
 	for (i = 0; i < this._TpictureCom.length; i++){
 	     if (this._TpictureCom[i].isOnPicCom()) {
@@ -548,18 +339,27 @@ Scene_Title.prototype.checkTPicCom = function() {
 	};
 };
 
+//==============================
+// * picComNeedCheckTouch
+//==============================
 Scene_Title.prototype.picComNeedCheckTouch = function() {
    if (this._tComTouch[0] != TouchInput.x) {return true};
    if (this._tComTouch[1] != TouchInput.y) {return true}; 
    return false;
 };
 
+//==============================
+// * update Title Touch Input Com
+//==============================
 Scene_Title.prototype.updateTitleTouchInputCom = function() {
     if (TouchInput.isTriggered()) {this.checkTPicCom()}; 
 	if (this.picComNeedCheckTouch()) {this.updateTComMouseIsOnPic()};
 	this._tComTouch = [TouchInput.x,TouchInput.y];
 };
 
+//==============================
+// * Update Com Side Input
+//==============================
 Scene_Title.prototype.updateComSideInput = function() {
     if (Input.isRepeated('right')) {
 		this.addTitleComIndex(1);
@@ -568,6 +368,9 @@ Scene_Title.prototype.updateComSideInput = function() {
 	};
 };
 
+//==============================
+// * updateTComMouseIsOnPic
+//==============================
 Scene_Title.prototype.updateTComMouseIsOnPic = function() {
 	var picID = -1;
 	for (i = 0; i < this._TpictureCom.length; i++){
@@ -581,6 +384,9 @@ Scene_Title.prototype.updateTComMouseIsOnPic = function() {
 	};
 };
 
+//==============================
+// * add Title ComIndex
+//==============================
 Scene_Title.prototype.addTitleComIndex = function(value) {
     SoundManager.playCursor();
 	var maxIndex = this._commandWindow._list.length - 1
@@ -592,6 +398,9 @@ Scene_Title.prototype.addTitleComIndex = function(value) {
 	};
 };
 
+//==============================
+// * update Pic Commands
+//==============================
 Scene_Title.prototype.updatePicCommands = function() {
 	 if (!this._picComE) {
 	     this.updateTitleTouchInputCom();
@@ -602,7 +411,7 @@ Scene_Title.prototype.updatePicCommands = function() {
 };
 
 //=============================================================================
-// ■■■ TpictureCom  ■■■
+// ■■■ TpictureCom  ■■■ 
 //=============================================================================
 function TpictureCom() {
     this.initialize.apply(this, arguments);
@@ -611,6 +420,9 @@ function TpictureCom() {
 TpictureCom.prototype = Object.create(Sprite.prototype);
 TpictureCom.prototype.constructor = TpictureCom;
 
+//==============================
+// * Initialize
+//==============================
 TpictureCom.prototype.initialize = function(data,index) {
     Sprite.prototype.initialize.call(this);
 	this._index = index;
@@ -632,11 +444,17 @@ TpictureCom.prototype.initialize = function(data,index) {
 	this.prepareBitmap();
 };
 
+//==============================
+// * Prepare Bitmap
+//==============================
 TpictureCom.prototype.prepareBitmap = function() {
 	var name = "Command_" + String(this._index);
     this.bitmap = ImageManager.loadTitle2(name)
 };
 
+//==============================
+// * set tcp
+//==============================
 TpictureCom.prototype.set_tcp = function(value) {
 	if (!value) {return null};
 	var s = value.split(',');
@@ -644,6 +462,9 @@ TpictureCom.prototype.set_tcp = function(value) {
 	return  [Number(s[0]),Number(s[1])];
 };
 
+//==============================
+// * get Data
+//==============================
 TpictureCom.prototype.getData = function() {
 	this.anchor.x = 0.5;
 	this.anchor.y = 0.5;
@@ -665,6 +486,9 @@ TpictureCom.prototype.getData = function() {
 	this.y += KB.title_slideYaxis;
 };
 
+//==============================
+// * On Picture Com
+//==============================
 TpictureCom.prototype.isOnPicCom = function() {
     if (TouchInput.x < this._pw1) {return false};
 	if (TouchInput.x > this._pw2) {return false};
@@ -673,6 +497,9 @@ TpictureCom.prototype.isOnPicCom = function() {
 	return true;
 };
 
+//==============================
+// * update Zoom Animation
+//==============================
 TpictureCom.prototype.updateZoomAnimation = function() {
 	this._aniData.shakeX = 0;
  	if (this._index == this._data._index) {
@@ -696,6 +523,9 @@ TpictureCom.prototype.updateZoomAnimation = function() {
 	this.scale.y = this.scale.x  
 };
 
+//==============================
+// * set Frame Index
+//==============================
 TpictureCom.prototype.setFrameIndex = function() {
 	this._aniData.shakeD1 = KB.title_shakeDuration;
 	this._aniData.shakeD2 = 3;
@@ -704,11 +534,17 @@ TpictureCom.prototype.setFrameIndex = function() {
 	this.setFrame(0, rectY, this._cw, this._ch);
 };
 
+//==============================
+// * update Slide
+//==============================
 TpictureCom.prototype.updateSlide = function() {
     this.x = this.cSlide(this.x, (this._orgXY[0] + this._aniData.shakeX), 60);
 	this.y = this.cSlide(this.y, this._orgXY[1], 60);	
 };
 
+//==============================
+// * Sprite Move To
+//==============================
 TpictureCom.prototype.cSlide = function(value,real_value,speed) {
 	if (value == real_value) {return value};
 	var dnspeed = 3 + (Math.abs(value - real_value) / speed);
@@ -720,16 +556,25 @@ TpictureCom.prototype.cSlide = function(value,real_value,speed) {
 	return Math.floor(value);
 };
 
+//==============================
+// * update Opacity
+//==============================
 TpictureCom.prototype.updateOpacity = function() {
     this.opacity += 15;
 };
 
+//==============================
+// * shakeClear
+//==============================
 TpictureCom.prototype.shakeClear = function() {
 	this._aniData.shakeD1 = 0;
 	this._aniData.shakeD2 = 0;
 	this._aniData.shakeX = 0;
 };
 			
+//==============================
+// * update Shake Animation
+//==============================
 TpictureCom.prototype.updateShakeAnimation = function() {
 	if (this._index != this._data._index) {this.shakeClear();return};
 	if (this._aniData.shakeD1 > 0) {
@@ -745,6 +590,9 @@ TpictureCom.prototype.updateShakeAnimation = function() {
 	};
 };
 
+//==============================
+// * update Pic Command
+//==============================
 TpictureCom.prototype.updatePicCommand = function() {
 	if (this._wait > 0) {this._wait--;return};
     if (this._aniData.mode == 1) {
@@ -757,6 +605,9 @@ TpictureCom.prototype.updatePicCommand = function() {
 	this.updateOpacity();
 };
 
+//==============================
+// * Update
+//==============================
 TpictureCom.prototype.update = function() {
     Sprite.prototype.update.call(this);
 	if (!this._cw) {
