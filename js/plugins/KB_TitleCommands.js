@@ -4,26 +4,23 @@
 
 /*:
  * @target MZ
- * @plugindesc (v2.4) Fix sprite persistence: Force hide on any command confirmation.
+ * @plugindesc (v2.7) Add Custom Text Content for "Press Start".
  * @author KB
  * @base KB_Core
  * @orderAfter KB_Core
  * * @help  
  * =============================================================================
- * +++ KB - Title Picture Commands (v2.4) +++
+ * +++ KB - Title Picture Commands (v2.7) +++
  * =============================================================================
  * YÊU CẦU:
  * - Plugin này cần "KB_CoreEngine" nằm ở trên nó trong danh sách Plugin.
- * - Các file ảnh phải để trong thư mục: img/titles2/
  * * =============================================================================
- * HƯỚNG DẪN SỬ DỤNG:
- * =============================================================================
- * 1. Phase 1 (Press Start):
- * - Nếu bạn điền tên ảnh vào "Press Start Image": Sẽ hiện ảnh đó.
- * - Nếu bạn ĐỂ TRỐNG "Press Start Image": Sẽ hiện dòng text mặc định
- * "- PRESS ANY BUTTON -".
- * * 2. Các hình ảnh khác (Command, Cursor) vẫn giữ nguyên cách dùng cũ.
- *
+ * CÁCH HOẠT ĐỘNG:
+ * 1. Phase 1 (Press Start): 
+ * - Nếu có ảnh "Press Start Image": Hiển thị ảnh.
+ * - Nếu KHÔNG có ảnh: Hiển thị Text do bạn nhập (Content Text).
+ * 2. Phase 2 (Main Menu): 
+ * - Tự động đổi Background và hiển thị Menu lệnh.
  * =============================================================================
  *
  * @param ---<PHASE 1: PRESS START>---
@@ -38,24 +35,13 @@
  *
  * @param Press Start Image
  * @text "Press Button" Image
- * @desc Tên file ảnh (trong img/titles2). ĐỂ TRỐNG nếu muốn hiện Text mặc định.
+ * @desc Tên file ảnh (trong img/titles2). ĐỂ TRỐNG nếu muốn hiện Text tùy chỉnh.
  * @default 
- * @parent ---<PHASE 1: PRESS START>---
- *
- * @param Press Start X
- * @desc Tọa độ X. (Nếu dùng Text mặc định thì hệ thống tự căn giữa, X này dùng để tinh chỉnh thêm).
- * @default 408
- * @type number
- * @parent ---<PHASE 1: PRESS START>---
- * * @param Press Start Y
- * @desc Tọa độ Y của ảnh hoặc dòng Text.
- * @default 400
- * @type number
  * @parent ---<PHASE 1: PRESS START>---
  *
  * @param Phase 1 Character
  * @text Phase 1 Image/Char
- * @desc Tên file ảnh nhân vật/overlay cho Phase 1 (trong img/titles2). Để trống nếu không dùng.
+ * @desc Tên file ảnh nhân vật/overlay RIÊNG cho Phase 1 (trong img/titles2).
  * @parent ---<PHASE 1: PRESS START>---
  *
  * @param P1 Char X
@@ -72,12 +58,74 @@
  * @min -2000
  * @parent ---<PHASE 1: PRESS START>---
  *
+ * @param ---<TEXT CONFIG (PHASE 1)>---
+ * @desc Cấu hình nội dung và hiển thị chữ Press Start.
+ *
+ * @param PS Text String
+ * @text Content Text
+ * @desc Nội dung dòng chữ thông báo.
+ * @default - PRESS ANY BUTTON -
+ * @parent ---<TEXT CONFIG (PHASE 1)>---
+ *
+ * @param PS Font Face
+ * @text Font Name
+ * @desc Tên Font chữ. Để trống sẽ dùng font mặc định.
+ * @parent ---<TEXT CONFIG (PHASE 1)>---
+ *
+ * @param PS Font Size
+ * @text Font Size
+ * @desc Kích thước chữ.
+ * @default 32
+ * @type number
+ * @parent ---<TEXT CONFIG (PHASE 1)>---
+ *
+ * @param PS Text Color
+ * @text Text Color
+ * @desc Mã màu Hex hoặc tên màu.
+ * @default #ffffff
+ * @parent ---<TEXT CONFIG (PHASE 1)>---
+ *
+ * @param PS Outline Color
+ * @text Outline Color
+ * @desc Màu viền chữ.
+ * @default rgba(0, 0, 0, 0.6)
+ * @parent ---<TEXT CONFIG (PHASE 1)>---
+ *
+ * @param PS Outline Width
+ * @text Outline Width
+ * @desc Độ dày viền chữ.
+ * @default 4
+ * @type number
+ * @parent ---<TEXT CONFIG (PHASE 1)>---
+ *
+ * @param Press Start X
+ * @desc Tọa độ X của dòng Text (hoặc ảnh).
+ * @default 408
+ * @type number
+ * @parent ---<TEXT CONFIG (PHASE 1)>---
+ *
+ * @param Press Start Y
+ * @desc Tọa độ Y của dòng Text (hoặc ảnh).
+ * @default 400
+ * @type number
+ * @parent ---<TEXT CONFIG (PHASE 1)>---
+ *
  * @param ---<PHASE 2: MAIN MENU>---
- * @desc Cấu hình cho màn hình menu chính.
+ * @desc Cấu hình cho màn hình menu chính (Sau khi đã nhấn nút).
+ *
+ * @param Phase 2 Background 1
+ * @text Phase 2 Background (Titles1)
+ * @desc Tên file ảnh nền lớp 1 cho Phase 2 (trong img/titles1). ĐỂ TRỐNG nếu không muốn đổi.
+ * @parent ---<PHASE 2: MAIN MENU>---
+ *
+ * @param Phase 2 Background 2
+ * @text Phase 2 Frame (Titles2)
+ * @desc Tên file ảnh nền lớp 2 cho Phase 2 (trong img/titles2). ĐỂ TRỐNG nếu không muốn đổi.
+ * @parent ---<PHASE 2: MAIN MENU>---
  *
  * @param Phase 2 Character
  * @text Phase 2 Image/Char
- * @desc Tên file ảnh nhân vật/overlay cho Phase 2 (trong img/titles2). Để trống nếu không dùng.
+ * @desc Tên file ảnh nhân vật/overlay RIÊNG cho Phase 2 (trong img/titles2).
  * @parent ---<PHASE 2: MAIN MENU>---
  *
  * @param P2 Char X
@@ -233,7 +281,18 @@ KB.title_p1_charImg = String(KB.parameters['Phase 1 Character'] || "");
 KB.title_p1_charX = Number(KB.parameters['P1 Char X'] || 0);
 KB.title_p1_charY = Number(KB.parameters['P1 Char Y'] || 0);
 
+// --- TEXT CONFIG ---
+KB.title_ps_text = String(KB.parameters['PS Text String'] || "- PRESS ANY BUTTON -"); // New v2.7
+KB.title_ps_font = String(KB.parameters['PS Font Face'] || "");
+KB.title_ps_size = Number(KB.parameters['PS Font Size'] || 32);
+KB.title_ps_color = String(KB.parameters['PS Text Color'] || "#ffffff");
+KB.title_ps_outlineColor = String(KB.parameters['PS Outline Color'] || "rgba(0, 0, 0, 0.6)");
+KB.title_ps_outlineWidth = Number(KB.parameters['PS Outline Width'] || 4);
+
+
 // --- PHASE 2 SETTINGS ---
+KB.title_p2_bg1 = String(KB.parameters['Phase 2 Background 1'] || "");
+KB.title_p2_bg2 = String(KB.parameters['Phase 2 Background 2'] || "");
 KB.title_p2_charImg = String(KB.parameters['Phase 2 Character'] || "");
 KB.title_p2_charX = Number(KB.parameters['P2 Char X'] || 0);
 KB.title_p2_charY = Number(KB.parameters['P2 Char Y'] || 0);
@@ -242,21 +301,21 @@ KB.title_p2_charY = Number(KB.parameters['P2 Char Y'] || 0);
 KB.title_comMode = Number(KB.parameters['Animation Mode'] || 1);
 KB.title_shakeDuration = Number(KB.parameters['Shake Duration'] || 30);
 KB.title_slideXaxis = Number(KB.parameters['Slide X-Axis'] || -100);
-KB.title_slideYaxis = Number(KB.parameters['Slide Y-Axis'] || 0);	
+KB.title_slideYaxis = Number(KB.parameters['Slide Y-Axis'] || 0);   
 KB.title_sideInput = String(KB.parameters['Left & Right Input'] || "true");
 
 // --- CURSOR SETTINGS ---
 KB.title_cursorVisible = String(KB.parameters['Cursor Visible'] || "true");
 KB.title_cursorSlide = String(KB.parameters['Cursor Wave Animation'] || "true");
 KB.title_cursorX = Number(KB.parameters['Cursor X-Axis'] || 0);
-KB.title_cursorY = Number(KB.parameters['Cursor Y-Axis'] || 5);	
+KB.title_cursorY = Number(KB.parameters['Cursor Y-Axis'] || 5); 
 KB.title_cursorRot = String(KB.parameters['Cursor Rotation Animation'] || "false");
 KB.title_cursorRotSpeed = Number(KB.parameters['Cursor Rotation Speed'] || 0.05);
 
 KB.title_com_pos = [];
 for (var i = 0; i < 10; i++) {
     KB.title_com_pos[i] = (KB.parameters['Command Pos ' + String(i + 1)] || null);
-};	
+};  
 
 //=============================================================================
 // ■■■ Scene Title  ■■■
@@ -304,7 +363,7 @@ Scene_Title.prototype.isBusy = function() {
 };
 
 //==============================
-// ♦ NEW ♦  Hide All Elements
+// ♦ FUNCTION ♦  Hide All Elements
 //==============================
 Scene_Title.prototype.hideAllCustomSprites = function() {
     if (this._phase1Container) this._phase1Container.visible = false;
@@ -316,14 +375,10 @@ Scene_Title.prototype.hideAllCustomSprites = function() {
 
 //==============================
 // ♦ ALIAS ♦  Window Title Command - Process OK
-// ** CRITICAL FIX: Hide sprites immediately when OK is pressed on ANY command
 //==============================
 var _KB_Window_TitleCommand_processOk = Window_TitleCommand.prototype.processOk;
 Window_TitleCommand.prototype.processOk = function() {
-    // Gọi hàm gốc để thực thi lệnh (New Game, Options...)
     _KB_Window_TitleCommand_processOk.call(this);
-    
-    // Ngay lập tức ẩn toàn bộ hình ảnh Custom của Scene Title
     if (SceneManager._scene instanceof Scene_Title && SceneManager._scene.hideAllCustomSprites) {
         SceneManager._scene.hideAllCustomSprites();
     }
@@ -353,7 +408,7 @@ Scene_Title.prototype.createTitleField3 = function() {
 };
 
 //==============================
-// * Create Phase Graphics
+// * Create Phase Graphics (UPDATED v2.7)
 //==============================
 Scene_Title.prototype.createPhaseGraphics = function() {
     // --- Phase 1 Container ---
@@ -374,19 +429,26 @@ Scene_Title.prototype.createPhaseGraphics = function() {
     this._pressStartSprite.anchor.y = 0.5;
     
     if (KB.title_pressStartImg && KB.title_pressStartImg !== "") {
+        // Dùng ảnh
         this._pressStartSprite.bitmap = ImageManager.loadTitle2(KB.title_pressStartImg);
         this._pressStartSprite.x = KB.title_pressStartX;
         this._pressStartSprite.y = KB.title_pressStartY;
     } else {
+        // Dùng Text Custom (v2.7 Update)
         var width = Graphics.width; 
-        var height = 64;
+        var height = KB.title_ps_size * 2;
         var bitmap = new Bitmap(width, height);
-        bitmap.fontFace = $gameSystem.mainFontFace();
-        bitmap.fontSize = 32;
-        bitmap.textColor = "#ffffff";
-        bitmap.outlineColor = "rgba(0, 0, 0, 0.6)";
-        bitmap.outlineWidth = 4;
-        bitmap.drawText("- PRESS ANY BUTTON -", 0, 0, width, height, "center");
+        
+        bitmap.fontFace = KB.title_ps_font ? KB.title_ps_font : $gameSystem.mainFontFace();
+        bitmap.fontSize = KB.title_ps_size;
+        bitmap.textColor = KB.title_ps_color;
+        bitmap.outlineColor = KB.title_ps_outlineColor;
+        bitmap.outlineWidth = KB.title_ps_outlineWidth;
+        
+        // Dùng biến Text mới thay vì chuỗi cứng
+        var content = KB.title_ps_text; 
+        bitmap.drawText(content, 0, 0, width, height, "center");
+        
         this._pressStartSprite.bitmap = bitmap;
         this._pressStartSprite.x = (KB.title_pressStartX === 408) ? Graphics.width / 2 : KB.title_pressStartX; 
         this._pressStartSprite.y = KB.title_pressStartY;
@@ -424,6 +486,18 @@ Scene_Title.prototype.updatePhase0 = function() {
 };
 
 //==============================
+// * Change Backgrounds to Phase 2
+//==============================
+Scene_Title.prototype.changeBackgroundsToPhase2 = function() {
+    if (KB.title_p2_bg1 && KB.title_p2_bg1 !== "") {
+        this._backSprite1.bitmap = ImageManager.loadTitle1(KB.title_p2_bg1);
+    }
+    if (KB.title_p2_bg2 && KB.title_p2_bg2 !== "") {
+        this._backSprite2.bitmap = ImageManager.loadTitle2(KB.title_p2_bg2);
+    }
+};
+
+//==============================
 // * Transition Logic
 //==============================
 Scene_Title.prototype.transitionToPhase2 = function() {
@@ -433,6 +507,9 @@ Scene_Title.prototype.transitionToPhase2 = function() {
     TouchInput.clear();
 
     this._titlePhase = 1;
+    
+    this.changeBackgroundsToPhase2();
+
     this.refreshPhaseVisibility();
     
     this._commandWindow.activate();
@@ -462,42 +539,42 @@ Scene_Title.prototype.refreshPhaseVisibility = function() {
 // * Standard Functions (No changes below)
 //==============================
 Scene_Title.prototype.createTitlePictureCommands = function() {
-	this._picComE = false;
-	this._TpictureCom = [];
-	this._tComTouch = [TouchInput.x,TouchInput.y];
-	this._picComIndex = this._commandWindow._index;
-	for (i = 0; i < this._commandWindow._list.length; i++){
-		 this._TpictureCom[i] = new TpictureCom(this._commandWindow,i);
-		 this._TpictureCom[i].z = 300;
-		 this._titleField3.addChild(this._TpictureCom[i]);
-	};
- 	this._commandWindow.x = -(Graphics.width * 2);	
+    this._picComE = false;
+    this._TpictureCom = [];
+    this._tComTouch = [TouchInput.x,TouchInput.y];
+    this._picComIndex = this._commandWindow._index;
+    for (i = 0; i < this._commandWindow._list.length; i++){
+         this._TpictureCom[i] = new TpictureCom(this._commandWindow,i);
+         this._TpictureCom[i].z = 300;
+         this._titleField3.addChild(this._TpictureCom[i]);
+    };
+    this._commandWindow.x = -(Graphics.width * 2);  
 };
 
 Scene_Title.prototype.createCursorCommand = function() {
-	this._cursorSlide = [0,0,0,false];
-	if (String(KB.title_cursorSlide) == "true") {this._cursorSlide[3] = true};
+    this._cursorSlide = [0,0,0,false];
+    if (String(KB.title_cursorSlide) == "true") {this._cursorSlide[3] = true};
     this._cursor = new Sprite(ImageManager.loadTitle2("Cursor"));
-	this._cursor.anchor.x = 0.5;
-	this._cursor.anchor.y = 0.5;
-	this._cursor.org = [KB.title_cursorX,KB.title_cursorY]
-	if (this._cursorSlide[3]) {this._cursor.org[0] -= 5}
-	this._cursor.opacity = 0;
-	this._cursor.z = 350;
-	this._cursor.rot = [true,0.05];
-	this._cursor.rot[0] = String(KB.title_cursorRot) == "true" ? true : false;
-	this._cursor.rot[1] = KB.title_cursorRotSpeed;
-	this._titleField3.addChild(this._cursor);
+    this._cursor.anchor.x = 0.5;
+    this._cursor.anchor.y = 0.5;
+    this._cursor.org = [KB.title_cursorX,KB.title_cursorY]
+    if (this._cursorSlide[3]) {this._cursor.org[0] -= 5}
+    this._cursor.opacity = 0;
+    this._cursor.z = 350;
+    this._cursor.rot = [true,0.05];
+    this._cursor.rot[0] = String(KB.title_cursorRot) == "true" ? true : false;
+    this._cursor.rot[1] = KB.title_cursorRotSpeed;
+    this._titleField3.addChild(this._cursor);
 };
 
 Scene_Title.prototype.updateTitleCursor = function() {
-	 if (this._cursorSlide[3]) {this.updateCursorSlide()};
-	 if (this._cursor.rot[0]) {this.updateCursorRotation()}; 
-   	 this._cursor.opacity += 5;
- 	 var nx = this.comSprite().x - (this.comSprite().bitmap.width / 2) - (this._cursor.width / 2) + this._cursorSlide[0];
-	 var ny = this.comSprite().y - (this.comSprite().bitmap.height / 2) + (this._cursor.height / 2) + this._cursor.org[1];
+     if (this._cursorSlide[3]) {this.updateCursorSlide()};
+     if (this._cursor.rot[0]) {this.updateCursorRotation()}; 
+     this._cursor.opacity += 5;
+     var nx = this.comSprite().x - (this.comSprite().bitmap.width / 2) - (this._cursor.width / 2) + this._cursorSlide[0];
+     var ny = this.comSprite().y - (this.comSprite().bitmap.height / 2) + (this._cursor.height / 2) + this._cursor.org[1];
      this._cursor.x = this.cursorMoveto(this._cursor.x , nx, 10);
-	 this._cursor.y = this.cursorMoveto(this._cursor.y, ny, 10);
+     this._cursor.y = this.cursorMoveto(this._cursor.y, ny, 10);
 };
 
 Scene_Title.prototype.comSprite = function() {
@@ -510,42 +587,42 @@ Scene_Title.prototype.updateCursorRotation = function() {
 
 Scene_Title.prototype.updateCursorSlide = function() {
      this._cursorSlide[1] ++
-	 if (this._cursorSlide[1] < 3) {return};
-	 this._cursorSlide[1] = 0
-	 this._cursorSlide[2] ++
-	 if (this._cursorSlide[2] < 15) {
-		 this._cursorSlide[0] ++;
-	 } else if (this._cursorSlide[2] < 30) {
-		 this._cursorSlide[0] --;
-	 } else {
-		 this._cursorSlide[0] = 0;
-		 this._cursorSlide[2] = 0;
-	 };
+     if (this._cursorSlide[1] < 3) {return};
+     this._cursorSlide[1] = 0
+     this._cursorSlide[2] ++
+     if (this._cursorSlide[2] < 15) {
+         this._cursorSlide[0] ++;
+     } else if (this._cursorSlide[2] < 30) {
+         this._cursorSlide[0] --;
+     } else {
+         this._cursorSlide[0] = 0;
+         this._cursorSlide[2] = 0;
+     };
 };
 
 Scene_Title.prototype.cursorMoveto = function(value,real_value,speed) {
-	if (value == real_value) {return value};
-	var dnspeed = 5 + (Math.abs(value - real_value) / speed);
-	if (value > real_value) {value -= dnspeed;
-	    if (value < real_value) {value = real_value};}
+    if (value == real_value) {return value};
+    var dnspeed = 5 + (Math.abs(value - real_value) / speed);
+    if (value > real_value) {value -= dnspeed;
+        if (value < real_value) {value = real_value};}
     else if (value < real_value) {value  += dnspeed;
-    	if (value  > real_value) {value  = real_value};		
+        if (value  > real_value) {value  = real_value};     
     };
-	return Math.floor(value);
+    return Math.floor(value);
 };
 
 Scene_Title.prototype.checkTPicCom = function() {
-	for (i = 0; i < this._TpictureCom.length; i++){
-	     if (this._TpictureCom[i].isOnPicCom()) {
-			 this._commandWindow._index = i;
-			 if (this._picComIndex == this._commandWindow._index) {			    
-			      this._commandWindow.processOk();
-			 } else {
-				  this._commandWindow.playCursorSound()
-			 };
-			 this._picComIndex = this._commandWindow._index 
-		 };
-	};
+    for (i = 0; i < this._TpictureCom.length; i++){
+         if (this._TpictureCom[i].isOnPicCom()) {
+             this._commandWindow._index = i;
+             if (this._picComIndex == this._commandWindow._index) {             
+                  this._commandWindow.processOk();
+             } else {
+                  this._commandWindow.playCursorSound()
+             };
+             this._picComIndex = this._commandWindow._index 
+         };
+    };
 };
 
 Scene_Title.prototype.picComNeedCheckTouch = function() {
@@ -556,49 +633,49 @@ Scene_Title.prototype.picComNeedCheckTouch = function() {
 
 Scene_Title.prototype.updateTitleTouchInputCom = function() {
     if (TouchInput.isTriggered()) {this.checkTPicCom()}; 
-	if (this.picComNeedCheckTouch()) {this.updateTComMouseIsOnPic()};
-	this._tComTouch = [TouchInput.x,TouchInput.y];
+    if (this.picComNeedCheckTouch()) {this.updateTComMouseIsOnPic()};
+    this._tComTouch = [TouchInput.x,TouchInput.y];
 };
 
 Scene_Title.prototype.updateComSideInput = function() {
     if (Input.isRepeated('right')) {
-		this.addTitleComIndex(1);
-	} else if (Input.isRepeated('left')) {
-		this.addTitleComIndex(-1);
-	};
+        this.addTitleComIndex(1);
+    } else if (Input.isRepeated('left')) {
+        this.addTitleComIndex(-1);
+    };
 };
 
 Scene_Title.prototype.updateTComMouseIsOnPic = function() {
-	var picID = -1;
-	for (i = 0; i < this._TpictureCom.length; i++){
-	     if (this._TpictureCom[i].isOnPicCom()) {
-			 this._commandWindow._index = i;
-			 if (this._picComIndex != this._commandWindow._index) {			    
-	    		 this._commandWindow.playCursorSound();
-			 };
-			 this._picComIndex = this._commandWindow._index ;
-		 };
-	};
+    var picID = -1;
+    for (i = 0; i < this._TpictureCom.length; i++){
+         if (this._TpictureCom[i].isOnPicCom()) {
+             this._commandWindow._index = i;
+             if (this._picComIndex != this._commandWindow._index) {             
+                 this._commandWindow.playCursorSound();
+             };
+             this._picComIndex = this._commandWindow._index ;
+         };
+    };
 };
 
 Scene_Title.prototype.addTitleComIndex = function(value) {
     SoundManager.playCursor();
-	var maxIndex = this._commandWindow._list.length - 1
-	this._commandWindow._index += value;
-	if (this._commandWindow._index < 0) {
-		this._commandWindow._index = maxIndex;
-	} else if (this._commandWindow._index > maxIndex) {
-		this._commandWindow._index = 0;
-	};
+    var maxIndex = this._commandWindow._list.length - 1
+    this._commandWindow._index += value;
+    if (this._commandWindow._index < 0) {
+        this._commandWindow._index = maxIndex;
+    } else if (this._commandWindow._index > maxIndex) {
+        this._commandWindow._index = 0;
+    };
 };
 
 Scene_Title.prototype.updatePicCommands = function() {
-	 if (!this._picComE) {
-	     this.updateTitleTouchInputCom();
-	     if (this._sideInput) {this.updateComSideInput()};
-	 };
-	 if (this._cursor) {this.updateTitleCursor()};
-	 if (!this._picComE && this._commandWindow.isClosing()) {this._picComE = true;}
+     if (!this._picComE) {
+         this.updateTitleTouchInputCom();
+         if (this._sideInput) {this.updateComSideInput()};
+     };
+     if (this._cursor) {this.updateTitleCursor()};
+     if (!this._picComE && this._commandWindow.isClosing()) {this._picComE = true;}
 };
 
 //=============================================================================
@@ -613,111 +690,111 @@ TpictureCom.prototype.constructor = TpictureCom;
 
 TpictureCom.prototype.initialize = function(data,index) {
     Sprite.prototype.initialize.call(this);
-	this._index = index;
-	this._data = data;
-	this._index2 = this._data._index;
-	this._wait = 5 * index;
-	this.opacity = 0;
-	this._aniData = {};
-	this._aniData.mode = KB.title_comMode;
-	this._aniData.zoomON = false;
-	this._aniData.zoomMax = 1.3;
+    this._index = index;
+    this._data = data;
+    this._index2 = this._data._index;
+    this._wait = 5 * index;
+    this.opacity = 0;
+    this._aniData = {};
+    this._aniData.mode = KB.title_comMode;
+    this._aniData.zoomON = false;
+    this._aniData.zoomMax = 1.3;
     this._aniData.zoomPhase = 0; 
-	this._aniData.zoomSpeed = 0.010;
-	this._aniData.shakeD1 = 60;
-	this._aniData.shakeD2 = 0;
-	this._aniData.shakeX = 0;
-	this._enabled = data.isCommandEnabled(index);
-	this._orgXY = this.set_tcp(KB.title_com_pos[index]);
-	this.prepareBitmap();
+    this._aniData.zoomSpeed = 0.010;
+    this._aniData.shakeD1 = 60;
+    this._aniData.shakeD2 = 0;
+    this._aniData.shakeX = 0;
+    this._enabled = data.isCommandEnabled(index);
+    this._orgXY = this.set_tcp(KB.title_com_pos[index]);
+    this.prepareBitmap();
 };
 
 TpictureCom.prototype.prepareBitmap = function() {
-	var name = "Command_" + String(this._index);
+    var name = "Command_" + String(this._index);
     this.bitmap = ImageManager.loadTitle2(name)
 };
 
 TpictureCom.prototype.set_tcp = function(value) {
-	if (!value) {return null};
-	var s = value.split(',');
-	if (!s[0] || !s[1]) {return null};
-	return  [Number(s[0]),Number(s[1])];
+    if (!value) {return null};
+    var s = value.split(',');
+    if (!s[0] || !s[1]) {return null};
+    return  [Number(s[0]),Number(s[1])];
 };
 
 TpictureCom.prototype.getData = function() {
-	this.anchor.x = 0.5;
-	this.anchor.y = 0.5;
-	this._cw = this.bitmap.width;
-	this._ch = this.bitmap.height / 2;
-	var fx = (Graphics.width - 816) / 2; 
-	var fy = (Graphics.height - 624) / 2;	
-	this._orgXY[0] += (this._cw / 2) + fx;
-	this._orgXY[1] += fy;
-	this.x = this._orgXY[0];
-	this.y = this._orgXY[1];
+    this.anchor.x = 0.5;
+    this.anchor.y = 0.5;
+    this._cw = this.bitmap.width;
+    this._ch = this.bitmap.height / 2;
+    var fx = (Graphics.width - 816) / 2; 
+    var fy = (Graphics.height - 624) / 2;   
+    this._orgXY[0] += (this._cw / 2) + fx;
+    this._orgXY[1] += fy;
+    this.x = this._orgXY[0];
+    this.y = this._orgXY[1];
     this._pw1 = this.x - (this._cw / 2);
-	this._pw2 = this.x + (this._cw / 2);
-	this._ph1 = this.y - (this._ch / 2);
-	this._ph2 = this.y + (this._ch / 2);	
-	var rectY = !this._enabled || this._index != this._data._index ? this._ch : 0;
-	this.setFrame(0, rectY, this._cw, this._ch);
-	this.x += KB.title_slideXaxis;
-	this.y += KB.title_slideYaxis;
+    this._pw2 = this.x + (this._cw / 2);
+    this._ph1 = this.y - (this._ch / 2);
+    this._ph2 = this.y + (this._ch / 2);    
+    var rectY = !this._enabled || this._index != this._data._index ? this._ch : 0;
+    this.setFrame(0, rectY, this._cw, this._ch);
+    this.x += KB.title_slideXaxis;
+    this.y += KB.title_slideYaxis;
 };
 
 TpictureCom.prototype.isOnPicCom = function() {
     if (TouchInput.x < this._pw1) {return false};
-	if (TouchInput.x > this._pw2) {return false};
-	if (TouchInput.y < this._ph1) {return false};
-	if (TouchInput.y > this._ph2) {return false};
-	return true;
+    if (TouchInput.x > this._pw2) {return false};
+    if (TouchInput.y < this._ph1) {return false};
+    if (TouchInput.y > this._ph2) {return false};
+    return true;
 };
 
 TpictureCom.prototype.updateZoomAnimation = function() {
-	this._aniData.shakeX = 0;
- 	if (this._index == this._data._index) {
-		if (this._aniData.zoomPhase == 0) {
-			this.scale.x -= this._aniData.zoomSpeed;
-			if (this.scale.x <= 1.00) {
-				this.scale.x = 1.00;
-				this._aniData.zoomPhase = 1;
-			};
-		} else {
-			this.scale.x += this._aniData.zoomSpeed;
-			if (this.scale.x >= this._aniData.zoomMax) {
-				this.scale.x = this._aniData.zoomMax;
-				this._aniData.zoomPhase = 0;
-			};		
-	    };
-	} else {
-		this._aniData.zoomPhase = 0;
-		if (this.scale.x > 1.00) {this.scale.x -= (this._aniData.zoomSpeed * 3)};
-	}; 
-	this.scale.y = this.scale.x  
+    this._aniData.shakeX = 0;
+    if (this._index == this._data._index) {
+        if (this._aniData.zoomPhase == 0) {
+            this.scale.x -= this._aniData.zoomSpeed;
+            if (this.scale.x <= 1.00) {
+                this.scale.x = 1.00;
+                this._aniData.zoomPhase = 1;
+            };
+        } else {
+            this.scale.x += this._aniData.zoomSpeed;
+            if (this.scale.x >= this._aniData.zoomMax) {
+                this.scale.x = this._aniData.zoomMax;
+                this._aniData.zoomPhase = 0;
+            };      
+        };
+    } else {
+        this._aniData.zoomPhase = 0;
+        if (this.scale.x > 1.00) {this.scale.x -= (this._aniData.zoomSpeed * 3)};
+    }; 
+    this.scale.y = this.scale.x  
 };
 
 TpictureCom.prototype.setFrameIndex = function() {
-	this._aniData.shakeD1 = KB.title_shakeDuration;
-	this._aniData.shakeD2 = 3;
+    this._aniData.shakeD1 = KB.title_shakeDuration;
+    this._aniData.shakeD2 = 3;
     this._index2 = this._data._index
-	var rectY = !this._enabled || this._index != this._data._index ? this._ch : 0;
-	this.setFrame(0, rectY, this._cw, this._ch);
+    var rectY = !this._enabled || this._index != this._data._index ? this._ch : 0;
+    this.setFrame(0, rectY, this._cw, this._ch);
 };
 
 TpictureCom.prototype.updateSlide = function() {
     this.x = this.cSlide(this.x, (this._orgXY[0] + this._aniData.shakeX), 60);
-	this.y = this.cSlide(this.y, this._orgXY[1], 60);	
+    this.y = this.cSlide(this.y, this._orgXY[1], 60);   
 };
 
 TpictureCom.prototype.cSlide = function(value,real_value,speed) {
-	if (value == real_value) {return value};
-	var dnspeed = 3 + (Math.abs(value - real_value) / speed);
-	if (value > real_value) {value -= dnspeed;
-	    if (value < real_value) {value = real_value};}
+    if (value == real_value) {return value};
+    var dnspeed = 3 + (Math.abs(value - real_value) / speed);
+    if (value > real_value) {value -= dnspeed;
+        if (value < real_value) {value = real_value};}
     else if (value < real_value) {value  += dnspeed;
-    	if (value  > real_value) {value  = real_value};		
+        if (value  > real_value) {value  = real_value};     
     };
-	return Math.floor(value);
+    return Math.floor(value);
 };
 
 TpictureCom.prototype.updateOpacity = function() {
@@ -725,43 +802,43 @@ TpictureCom.prototype.updateOpacity = function() {
 };
 
 TpictureCom.prototype.shakeClear = function() {
-	this._aniData.shakeD1 = 0;
-	this._aniData.shakeD2 = 0;
-	this._aniData.shakeX = 0;
+    this._aniData.shakeD1 = 0;
+    this._aniData.shakeD2 = 0;
+    this._aniData.shakeX = 0;
 };
-			
+            
 TpictureCom.prototype.updateShakeAnimation = function() {
-	if (this._index != this._data._index) {this.shakeClear();return};
-	if (this._aniData.shakeD1 > 0) {
-		if (this._aniData.shakeD2 > 0) {
-			this._aniData.shakeD2--;
-		    if (this._aniData.shakeD2 <= 0) {
-			    this._aniData.shakeD2 = 3;
-			    this._aniData.shakeX = -5 + (Math.abs(Math.random() * 10));
-			};
-		};
-		this._aniData.shakeD1--;
-	    if (this._aniData.shakeD1 <= 0) {this.shakeClear()};
-	};
+    if (this._index != this._data._index) {this.shakeClear();return};
+    if (this._aniData.shakeD1 > 0) {
+        if (this._aniData.shakeD2 > 0) {
+            this._aniData.shakeD2--;
+            if (this._aniData.shakeD2 <= 0) {
+                this._aniData.shakeD2 = 3;
+                this._aniData.shakeX = -5 + (Math.abs(Math.random() * 10));
+            };
+        };
+        this._aniData.shakeD1--;
+        if (this._aniData.shakeD1 <= 0) {this.shakeClear()};
+    };
 };
 
 TpictureCom.prototype.updatePicCommand = function() {
-	if (this._wait > 0) {this._wait--;return};
+    if (this._wait > 0) {this._wait--;return};
     if (this._aniData.mode == 1) {
-		this.updateZoomAnimation()
-	} else if (this._aniData.mode == 2) {
-		this.updateShakeAnimation();
-	};
-	if (this._index2 != this._data._index) {this.setFrameIndex()};
-	this.updateSlide();
-	this.updateOpacity();
+        this.updateZoomAnimation()
+    } else if (this._aniData.mode == 2) {
+        this.updateShakeAnimation();
+    };
+    if (this._index2 != this._data._index) {this.setFrameIndex()};
+    this.updateSlide();
+    this.updateOpacity();
 };
 
 TpictureCom.prototype.update = function() {
     Sprite.prototype.update.call(this);
-	if (!this._cw) {
-	    if (this.bitmap.isReady()) {this.getData()};
-	} else {
-		this.updatePicCommand();
+    if (!this._cw) {
+        if (this.bitmap.isReady()) {this.getData()};
+    } else {
+        this.updatePicCommand();
     };
 };
