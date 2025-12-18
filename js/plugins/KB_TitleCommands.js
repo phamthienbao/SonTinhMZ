@@ -4,13 +4,13 @@
 
 /*:
  * @target MZ
- * @plugindesc (v2.7) Add Custom Text Content for "Press Start".
+ * @plugindesc (v2.7 Fix) Add Custom Text Content for "Press Start" & Fix Cursor X.
  * @author KB
  * @base KB_Core
  * @orderAfter KB_Core
  * * @help  
  * =============================================================================
- * +++ KB - Title Picture Commands (v2.7) +++
+ * +++ KB - Title Picture Commands (v2.7 Fix) +++
  * =============================================================================
  * YÊU CẦU:
  * - Plugin này cần "KB_CoreEngine" nằm ở trên nó trong danh sách Plugin.
@@ -180,7 +180,7 @@
  * @desc
  * * @param Cursor X-Axis
  * @text X-Axis
- * @desc Điều chỉnh vị trí ngang con trỏ.
+ * @desc Điều chỉnh vị trí ngang con trỏ. (Số âm để dịch sang trái, dương sang phải).
  * @default 0
  * @min -2000
  * @parent ---<CURSOR SETTINGS>---
@@ -571,8 +571,11 @@ Scene_Title.prototype.updateTitleCursor = function() {
      if (this._cursorSlide[3]) {this.updateCursorSlide()};
      if (this._cursor.rot[0]) {this.updateCursorRotation()}; 
      this._cursor.opacity += 5;
-     var nx = this.comSprite().x - (this.comSprite().bitmap.width / 2) - (this._cursor.width / 2) + this._cursorSlide[0];
+     
+     // [FIXED] Added this._cursor.org[0] to the calculation below
+     var nx = this.comSprite().x - (this.comSprite().bitmap.width / 2) - (this._cursor.width / 2) + this._cursorSlide[0] + this._cursor.org[0];
      var ny = this.comSprite().y - (this.comSprite().bitmap.height / 2) + (this._cursor.height / 2) + this._cursor.org[1];
+     
      this._cursor.x = this.cursorMoveto(this._cursor.x , nx, 10);
      this._cursor.y = this.cursorMoveto(this._cursor.y, ny, 10);
 };
