@@ -1,6 +1,10 @@
 /*:
  * @target MZ
+<<<<<<< HEAD
  * @plugindesc [v2.5] Multi-language system & Language Picker interface (KB Edition) - Fixed.
+=======
+ * @plugindesc [v2.5] Multi-language system & Language Picker interface (KB Edition).
+>>>>>>> parent of b9b2728 (exxtract script)
  * @author KB (Dev)
  *
  * @help
@@ -232,17 +236,27 @@ if (!Imported.KB_Core) {
             }
             this._cache = {};
         }
+<<<<<<< HEAD
 
 
         // Thay thế hàm parseCSVLine cũ bằng hàm mới này:
         parseCSVLine(text) {
             const delimiter = ';'; // <--- CẤU HÌNH DẤU PHÂN CÁCH LÀ DẤU CHẤM PHẨY
+=======
+
+
+        parseCSVLine(text) {
+>>>>>>> parent of b9b2728 (exxtract script)
             const res = [];
             let start = 0, inQ = false;
             for (let i = 0; i < text.length; i++) {
                 if (text[i] === '"') inQ = !inQ;
+<<<<<<< HEAD
                 // Kiểm tra delimiter (;) thay vì dấu phẩy (,)
                 else if (text[i] === delimiter && !inQ) { 
+=======
+                else if (text[i] === ',' && !inQ) {
+>>>>>>> parent of b9b2728 (exxtract script)
                     res.push(text.substring(start, i));
                     start = i + 1;
                 }
@@ -251,6 +265,24 @@ if (!Imported.KB_Core) {
             return res;
         }
 
+<<<<<<< HEAD
+=======
+        setLanguage(locale) {
+            if (this._data[locale]) {
+                this._locale = locale;
+                this._cache = {}; 
+                ConfigManager.save();
+                // Refresh UI when language changes
+                if (SceneManager._scene) {
+                    const wins = SceneManager._scene._windowLayer.children;
+                    wins.forEach(w => {
+                        if (typeof w.refresh === 'function') w.refresh();
+                    });
+                }
+            }
+        }
+
+>>>>>>> parent of b9b2728 (exxtract script)
         cycleLanguage(reverse = false) {
             const keys = this._availableLocales; // Use list from config
             const valid = keys.filter(k => this._data[k] && typeof this._data[k] === 'object');
@@ -264,6 +296,7 @@ if (!Imported.KB_Core) {
                 this.setLanguage(valid[idx]);
             }
         }
+<<<<<<< HEAD
 
         getText(key) {
             const dict = this._data[this._locale];
@@ -271,6 +304,15 @@ if (!Imported.KB_Core) {
             return (dict && dict[key]) ? dict[key] : key;
         }
 
+=======
+
+        getText(key) {
+            const dict = this._data[this._locale];
+            // Return value if found, otherwise return key
+            return (dict && dict[key]) ? dict[key] : key;
+        }
+
+>>>>>>> parent of b9b2728 (exxtract script)
         process(text) {
             if (typeof text !== 'string') return text;
             if (text.indexOf('{') === -1) return text;
@@ -341,6 +383,7 @@ if (!Imported.KB_Core) {
                 SoundManager.playOk();
                 this.refresh();
                 return;
+<<<<<<< HEAD
             }
             _Window_Options_processOk.call(this);
         };
@@ -353,6 +396,20 @@ if (!Imported.KB_Core) {
                 this.refresh();
                 return;
             }
+=======
+            }
+            _Window_Options_processOk.call(this);
+        };
+        
+        const _Window_Options_cursorRight = Window_Options.prototype.cursorRight;
+        Window_Options.prototype.cursorRight = function(wrap) {
+            if (this.commandSymbol(this.index()) === 'locale') {
+                KBLocalization.cycleLanguage();
+                SoundManager.playCursor();
+                this.refresh();
+                return;
+            }
+>>>>>>> parent of b9b2728 (exxtract script)
             _Window_Options_cursorRight.call(this, wrap);
         };
         
