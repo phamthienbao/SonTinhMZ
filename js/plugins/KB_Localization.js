@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc [v2.5] Multi-language system & Language Picker interface (KB Edition).
+ * @plugindesc [v2.5] Multi-language system & Language Picker interface (KB Edition) - Fixed.
  * @author KB (Dev)
  *
  * @help
