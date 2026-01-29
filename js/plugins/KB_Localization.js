@@ -1,10 +1,6 @@
 /*:
  * @target MZ
-<<<<<<< HEAD
- * @plugindesc [v2.5] Multi-language system & Language Picker interface (KB Edition) - Fixed.
-=======
- * @plugindesc [v2.5] Multi-language system & Language Picker interface (KB Edition).
->>>>>>> parent of b9b2728 (exxtract script)
+ * @plugindesc [v2.5] Hệ thống đa ngôn ngữ & Giao diện chọn ngôn ngữ (KB Edition).
  * @author KB (Dev)
  *
  * @help
@@ -15,111 +11,106 @@
  * | . \ |  _ <  | |__| (_) | (_| (_| | | |/ / (_| || |_| | (_) | | | |
  * |_|\_\|_| \_\ |_____\___/ |___\__,_|_|_/___\__,_| \__|_|\___/|_| |_|
  * * ============================================================================
- * ## INTRODUCTION
+ * ## GIỚU THIỆU
  * ============================================================================
- * Exclusive plugin for managing multi-language projects. 
- * Integrates the "Language Picker" feature (Select Language) when New Game is selected.
- * Fully compatible with KB_TitleCommands to correctly hide the old UI elements.
+ * Plugin độc quyền giúp quản lý đa ngôn ngữ cho dự án game. 
+ * Tích hợp tính năng "Language Picker" (Chọn ngôn ngữ) đẹp mắt khi New Game.
+ * Tương thích hoàn toàn với KB_TitleCommands (MOG) để ẩn giao diện cũ.
  *
- * * Version V2.5: Updated Picker Language interface: Larger window, supports
- * * Touch/Click on language change arrows and the confirmation OK button. OK button uses 
- * * a custom image (requires img/system/Button_OK.png).
- *
- * * IMPORTANT SETUP ORDER:
- * * 1. KB_CoreEngine.js (TOP)
- * * 2. KB_TitleCommands.js
- * * 3. KB_Localization.js (BOTTOM)
+ * * Phiên bản V2.5: Cập nhật giao diện Picker Language: Cửa sổ lớn hơn, hỗ trợ
+ * * Touch/Click vào mũi tên đổi ngôn ngữ và nút OK xác nhận. Nút OK dùng ảnh
+ * * tùy chỉnh (yêu cầu file img/system/Button_OK.png).
  *
  * ============================================================================
- * ## SETUP GUIDE
+ * ## HƯỚNG DẪN CÀI ĐẶT (SETUP GUIDE)
  * ============================================================================
- * 1. INSTALLATION: 
- * - Place KB_CoreEngine.js at the top.
- * - Place KB_Localization.js below KB_CoreEngine.js and KB_TitleCommands.js.
+ * 1. CÀI ĐẶT: 
+ * - Đặt KB_CoreEngine.js ở trên cùng.
+ * - Đặt KB_Localization.js ở dưới KB_CoreEngine.js.
  *
- * 2. FOLDER & DATA PREPARATION:
- * - Root folder: data/locales/
- * - Create subfolders in "data/locales/" based on Language Codes (e.g., vi, en).
- * - Place translation files (with the same name) into the corresponding folders.
- * (Example: data/locales/vi/General.csv, data/locales/en/General.csv)
+ * 2. CHUẨN BỊ THƯ MỤC & DỮ LIỆU:
+ * - Thư mục gốc: data/locales/
+ * - Tạo các thư mục con trong "data/locales/" theo Mã ngôn ngữ (ví dụ: vi, en).
+ * - Đặt các file dịch (chung tên) vào các thư mục tương ứng.
+ * (Ví dụ: data/locales/vi/General.csv, data/locales/en/General.csv)
  *
- * 3. PLUGIN MANAGER CONFIGURATION:
- * - **Available Locales**: Enter the language codes (e.g., vi, en).
- * - **Data Type**: Select the file type you use (CSV or JSON).
- * - **Data Files**: Enter the NAMES of the data files (e.g., General, Quests). DO NOT include .csv or .json extension.
- * * 4. FLAG & OK BUTTON IMAGE PREPARATION:
- * - Flag image: flag_[LanguageCode].png (Example: flag_vi.png).
- * - **OK Button Image**: Button_OK.png
- * - Copy both into the folder: img/system/
+ * 3. CẤU HÌNH PLUGIN MANAGER:
+ * - **Available Locales**: Điền các mã ngôn ngữ (ví dụ: vi, en).
+ * - **Data Type**: Chọn loại file bạn dùng (CSV hoặc JSON).
+ * - **Data Files**: Điền TÊN các file dữ liệu (ví dụ: General, Quests). KHÔNG cần điền .csv hay .json.
+ * * 4. CHUẨN BỊ ẢNH LÁ CỜ & NÚT OK:
+ * - Ảnh lá cờ: flag_[MãNgônNgữ].png (Ví dụ: flag_vi.png).
+ * - **Ảnh nút OK**: Button_OK.png
+ * - Chép cả hai vào thư mục: img/system/
  *
  * ============================================================================
- * @param --- Language Configuration ---
+ * @param --- Cấu Hình Ngôn Ngữ ---
  * @default
  *
  * @param Default Language
- * @text Default Language
- * @desc The language code to run on first launch (vi, en, jp...).
+ * @text Ngôn ngữ mặc định
+ * @desc Mã ngôn ngữ khởi chạy lần đầu (vi, en, jp...).
  * @default vi
  *
  * @param Available Locales
- * @text Available Language Codes
- * @desc List of available language codes, separated by commas (Example: vi, en, jp).
+ * @text Mã Ngôn ngữ khả dụng
+ * @desc Danh sách các mã ngôn ngữ, cách nhau bằng dấu phẩy (Ví dụ: vi, en, jp).
  * @default vi, en
  *
- * @param --- Data Configuration ---
+ * @param --- Cấu Hình Dữ Liệu ---
  * @default
  *
  * @param Data Root Folder
- * @text Root Folder
- * @desc The root folder containing the language folders. (Default: locales)
+ * @text Thư mục Gốc
+ * @desc Thư mục gốc chứa các folder ngôn ngữ. (Mặc định: locales)
  * @default locales
  *
  * @param Data Type
- * @text Data File Type
- * @desc Select the data file type to load. (CSV or JSON)
+ * @text Loại File Dữ liệu
+ * @desc Chọn loại file dữ liệu để tải. (CSV hoặc JSON)
  * @type select
  * @option CSV
  * @option JSON
  * @default CSV
  *
  * @param Data Files
- * @text Common Data File Names
- * @desc Enter the NAMES of the data files, separated by commas (Example: General, Quests). DO NOT include .csv/.json extension.
+ * @text Tên File Dữ liệu chung
+ * @desc Nhập TÊN các file dữ liệu, cách nhau bằng dấu phẩy (Ví dụ: General, Quests). KHÔNG cần điền .csv/.json.
  * @default Languages
  * @type string
  *
- * @param --- UI Features ---
+ * @param --- Tính Năng Giao Diện ---
  * @default
  *
  * @param Show on Title
- * @text Language Command (Title Menu)
- * @desc Display the "Language" command line in the main menu?
+ * @text Nút Ngôn ngữ (Menu Title)
+ * @desc Hiển thị dòng lệnh "Ngôn ngữ" ở menu chính?
  * @type boolean
  * @default true
  *
  * @param Show in Options
- * @text Language Option (Options Menu)
- * @desc Display the "Language" option in the Options Menu?
+ * @text Ngôn ngữ (Menu Option)
+ * @desc Hiển thị tùy chọn "Ngôn ngữ" trong Menu Tùy chọn (Options)?
  * @type boolean
  * @default true
  *
  * @param New Game Picker
- * @text Picker on New Game
- * @desc Display the language selection interface + flag when New Game is pressed?
+ * @text Bảng Chọn khi New Game
+ * @desc Hiển thị giao diện chọn ngôn ngữ + lá cờ khi bấm New Game?
  * @type boolean
  * @default true
  */
 
-// Requires KB_CoreEngine.js to be enabled and placed above.
+// Yêu cầu KB_CoreEngine.js phải được bật và nằm ở trên.
 if (!Imported.KB_Core) {
-    throw new Error("This plugin requires KB_CoreEngine.js to work! Please place it above.");
+    throw new Error("Plugin này yêu cầu KB_CoreEngine.js để hoạt động! Vui lòng đặt nó ở trên.");
 }
 
 (() => {
     const pluginName = "KB_Localization";
     const params = PluginManager.parameters(pluginName);
     
-    // --- PARAMETER RETRIEVAL AND PARSING ---
+    // --- LẤY THAM SỐ VÀ PHÂN TÍCH ---
     const dataRootFolder = params['Data Root Folder'] || 'locales';
     const dataType = params['Data Type'].toUpperCase();
     const fileExtension = dataType === 'CSV' ? '.csv' : '.json';
@@ -127,7 +118,7 @@ if (!Imported.KB_Core) {
     const dataFilesStr = params['Data Files'] || 'Languages';
     const localesStr = params['Available Locales'] || 'vi,en';
     
-    // Splits into an array, removes spaces, and adds file extensions
+    // Tách thành mảng, loại bỏ khoảng trắng, và thêm đuôi mở rộng
     const dataFiles = dataFilesStr.split(',').map(f => f.trim()).filter(f => f.length > 0).map(f => f + fileExtension);
     const availableLocales = localesStr.split(',').map(f => f.trim()).filter(f => f.length > 0);
 
@@ -139,10 +130,10 @@ if (!Imported.KB_Core) {
     class KB_LocalizationManager {
         constructor() {
             this._locale = params['Default Language'] || 'vi';
-            this._data = {}; // Translation data
-            this._cache = {}; // Cache for process(text) function
+            this._data = {}; // Dữ liệu dịch thuật
+            this._cache = {}; // Cache cho hàm process(text)
             this._availableLocales = availableLocales;
-            // Initialize basic locales to prevent errors in getText
+            // Khởi tạo các locale cơ bản để đảm bảo getText không lỗi
             this._availableLocales.forEach(locale => {
                 if (!this._data[locale]) this._data[locale] = {};
             });
@@ -152,10 +143,10 @@ if (!Imported.KB_Core) {
         get locale() { return this._locale; }
 
         loadData() {
-            // Iterate through all available locales to load files
+            // Duyệt qua tất cả các ngôn ngữ khả dụng để tải file
             this._availableLocales.forEach(locale => {
                 dataFiles.forEach(fileName => {
-                    // Construct file path: data/[Data Root Folder]/[locale]/[fileName]
+                    // Xây dựng đường dẫn file: data/[Data Root Folder]/[locale]/[fileName]
                     const url = `data/${dataRootFolder}/${locale}/${fileName}`;
                     if (dataType === 'CSV') {
                         this.loadCSV(url, locale);
@@ -172,7 +163,7 @@ if (!Imported.KB_Core) {
             xhr.overrideMimeType('application/json');
             xhr.onload = () => {
                 if (xhr.status < 400) {
-                    // Use safe KB.Utils.parseJSON
+                    // Sử dụng KB.Utils.parseJSON an toàn
                     const jsonData = KB.Utils.parseJSON(xhr.responseText, null, `Localization JSON: ${url}`);
                     if (jsonData) {
                         this.mergeData(jsonData, locale);
@@ -191,15 +182,15 @@ if (!Imported.KB_Core) {
             xhr.send();
         }
         
-        // Merge new data into the correct locale
+        // Gộp dữ liệu mới vào đúng locale
         mergeData(newLocaleData, locale) {
             if (!this._data[locale]) this._data[locale] = {};
-            // Merge key-value of the new file into the current locale
+            // Gộp key-value của file mới vào locale hiện tại
             Object.assign(this._data[locale], newLocaleData);
             this._cache = {};
         }
 
-        // Read CSV and merge into corresponding locales
+        // Đọc CSV và gộp vào các locale tương ứng
         parseCSV(text, targetLocale) {
             const lines = text.trim().split(/\r?\n/);
             if (lines.length < 2) return;
@@ -207,18 +198,18 @@ if (!Imported.KB_Core) {
 
             const headers = this.parseCSVLine(lines[0]);
             
-            // Find the index of the target language column (targetLocale)
+            // Tìm index của cột ngôn ngữ mục tiêu (targetLocale)
             const targetIndex = headers.findIndex(h => h.trim() === targetLocale);
             let valueIndex;
 
             if (targetIndex !== -1) {
-                // If the target language column is found in the header, use it
+                // Nếu tìm thấy cột ngôn ngữ mục tiêu trong header, dùng nó
                 valueIndex = targetIndex;
             } else if (headers.length >= 2) {
-                // If not found, assume the file only has 2 columns: Key (0) and Value (1)
+                // Nếu không tìm thấy, giả định file này chỉ có 2 cột: Key (0) và Value (1)
                 valueIndex = 1;
             } else {
-                return; // Too few columns, skip
+                return; // File quá ít cột, bỏ qua
             }
             
             if (!this._data[targetLocale]) this._data[targetLocale] = {};
@@ -228,7 +219,7 @@ if (!Imported.KB_Core) {
                 if (row.length < 2) continue;
                 const key = row[0].trim();
                 
-                // Get value from the valueIndex column
+                // Lấy giá trị từ cột valueIndex
                 let val = row[valueIndex] || "";
                 val = val.replace(/^"|"$/g, '').replace(/""/g, '"');
                 this._data[targetLocale][key] = val;
@@ -236,27 +227,17 @@ if (!Imported.KB_Core) {
             }
             this._cache = {};
         }
-<<<<<<< HEAD
 
 
         // Thay thế hàm parseCSVLine cũ bằng hàm mới này:
         parseCSVLine(text) {
             const delimiter = ';'; // <--- CẤU HÌNH DẤU PHÂN CÁCH LÀ DẤU CHẤM PHẨY
-=======
-
-
-        parseCSVLine(text) {
->>>>>>> parent of b9b2728 (exxtract script)
             const res = [];
             let start = 0, inQ = false;
             for (let i = 0; i < text.length; i++) {
                 if (text[i] === '"') inQ = !inQ;
-<<<<<<< HEAD
                 // Kiểm tra delimiter (;) thay vì dấu phẩy (,)
                 else if (text[i] === delimiter && !inQ) { 
-=======
-                else if (text[i] === ',' && !inQ) {
->>>>>>> parent of b9b2728 (exxtract script)
                     res.push(text.substring(start, i));
                     start = i + 1;
                 }
@@ -265,14 +246,12 @@ if (!Imported.KB_Core) {
             return res;
         }
 
-<<<<<<< HEAD
-=======
         setLanguage(locale) {
             if (this._data[locale]) {
                 this._locale = locale;
                 this._cache = {}; 
                 ConfigManager.save();
-                // Refresh UI when language changes
+                // Refresh UI khi thay đổi ngôn ngữ
                 if (SceneManager._scene) {
                     const wins = SceneManager._scene._windowLayer.children;
                     wins.forEach(w => {
@@ -282,9 +261,8 @@ if (!Imported.KB_Core) {
             }
         }
 
->>>>>>> parent of b9b2728 (exxtract script)
         cycleLanguage(reverse = false) {
-            const keys = this._availableLocales; // Use list from config
+            const keys = this._availableLocales; // Dùng danh sách từ config
             const valid = keys.filter(k => this._data[k] && typeof this._data[k] === 'object');
             if (valid.length > 0) {
                 let idx = valid.indexOf(this._locale);
@@ -296,29 +274,19 @@ if (!Imported.KB_Core) {
                 this.setLanguage(valid[idx]);
             }
         }
-<<<<<<< HEAD
 
         getText(key) {
             const dict = this._data[this._locale];
-            // Return value if found, otherwise return key
+            // Trả về giá trị nếu tìm thấy, ngược lại trả về key
             return (dict && dict[key]) ? dict[key] : key;
         }
 
-=======
-
-        getText(key) {
-            const dict = this._data[this._locale];
-            // Return value if found, otherwise return key
-            return (dict && dict[key]) ? dict[key] : key;
-        }
-
->>>>>>> parent of b9b2728 (exxtract script)
         process(text) {
             if (typeof text !== 'string') return text;
             if (text.indexOf('{') === -1) return text;
             if (this._cache[text]) return this._cache[text];
             
-            // Replace all strings {key} with the translated value
+            // Thay thế tất cả các chuỗi {key} bằng giá trị dịch
             const result = text.replace(/\{(.*?)\}/g, (match, key) => {
                 return this.getText(key.trim());
             });
@@ -358,21 +326,21 @@ if (!Imported.KB_Core) {
         const _Window_Options_addGeneralOptions = Window_Options.prototype.addGeneralOptions;
         Window_Options.prototype.addGeneralOptions = function() {
             _Window_Options_addGeneralOptions.call(this);
-            // Command name translated from {cmd_lang} will display in the left column
+            // Tên lệnh đã được dịch từ {cmd_lang} sẽ hiển thị ở cột trái
             this.addCommand('{cmd_lang}', 'locale');
         };
         
-        // NOTE: Must save the original statusText function
+        // LƯU Ý: Phải lưu lại hàm statusText gốc
         const _Window_Options_statusText = Window_Options.prototype.statusText;
 
-        // Override statusText to only display the VALUE (Language Name)
+        // Ghi đè statusText để chỉ hiển thị GIÁ TRỊ (Tên ngôn ngữ)
         Window_Options.prototype.statusText = function(index) {
             if (this.commandSymbol(index) === 'locale') {
                 const name = KBLocalization.getText('lang_name');
-                // Display language name, or language code (uppercase) if name not found
+                // Hiển thị tên ngôn ngữ, hoặc mã ngôn ngữ (chữ hoa) nếu không tìm thấy tên
                 return name !== 'lang_name' ? name : KBLocalization.locale.toUpperCase();
             }
-            // Call original function for other Options commands (Volume, etc.)
+            // Gọi lại hàm gốc cho các lệnh Options khác (Volume, etc.)
             return _Window_Options_statusText.call(this, index);
         };
 
@@ -383,7 +351,6 @@ if (!Imported.KB_Core) {
                 SoundManager.playOk();
                 this.refresh();
                 return;
-<<<<<<< HEAD
             }
             _Window_Options_processOk.call(this);
         };
@@ -396,20 +363,6 @@ if (!Imported.KB_Core) {
                 this.refresh();
                 return;
             }
-=======
-            }
-            _Window_Options_processOk.call(this);
-        };
-        
-        const _Window_Options_cursorRight = Window_Options.prototype.cursorRight;
-        Window_Options.prototype.cursorRight = function(wrap) {
-            if (this.commandSymbol(this.index()) === 'locale') {
-                KBLocalization.cycleLanguage();
-                SoundManager.playCursor();
-                this.refresh();
-                return;
-            }
->>>>>>> parent of b9b2728 (exxtract script)
             _Window_Options_cursorRight.call(this, wrap);
         };
         
@@ -432,18 +385,18 @@ if (!Imported.KB_Core) {
             this.opacity = 255;
             this.hide();
             this.deactivate();
-            // Initialize Rectangle objects to store positions
+            // Khởi tạo các đối tượng Rectangle để lưu trữ vị trí
             this._leftArrowRect = new Rectangle(0, 0, 0, 0);
             this._rightArrowRect = new Rectangle(0, 0, 0, 0);
             this._okButtonRect = new Rectangle(0, 0, 0, 0);
             this._okBitmap = null; 
-            this._assetsLoading = false; // Flag to check loading status to prevent infinite loops
+            this._assetsLoading = false; // <<< Cờ kiểm tra trạng thái loading để tránh vòng lặp vô hạn
         }
 
         update() {
             super.update();
             if (this.active) {
-                // Handle Input via keys (keyboard/gamepad)
+                // Xử lý Input bằng phím (keyboard/gamepad)
                 if (Input.isRepeated('right')) {
                     this.cycleLang(false);
                 } else if (Input.isRepeated('left')) {
@@ -455,7 +408,7 @@ if (!Imported.KB_Core) {
                     SoundManager.playCancel();
                     this.processCancel();
                 }
-                this.processTouch(); // Handle touch/click
+                this.processTouch(); // Xử lý touch/click
             }
         }
         
@@ -465,28 +418,28 @@ if (!Imported.KB_Core) {
             this.refresh();
         }
         
-        // Fix: Replace canvasToLocalX with manual coordinate calculation
+        // Đã sửa lỗi: Thay thế canvasToLocalX bằng tính toán tọa độ thủ công
         processTouch() {
             if (TouchInput.isTriggered() || TouchInput.isRepeated()) {
                 
                 const globalX = TouchInput.x;
                 const globalY = TouchInput.y;
                 
-                // Convert global coordinates (screen) to local coordinates (contents area)
+                // Chuyển đổi tọa độ toàn cục (màn hình) sang tọa độ cục bộ (contents area)
                 const x = globalX - this.x - this.padding; 
                 const y = globalY - this.y - this.padding;
                 
-                // Check click/touch on left arrow
+                // Kiểm tra click/touch vào mũi tên trái
                 if (this._leftArrowRect.contains(x, y)) {
                     this.cycleLang(true);
                 }
                 
-                // Check click/touch on right arrow
+                // Kiểm tra click/touch vào mũi tên phải
                 else if (this._rightArrowRect.contains(x, y)) {
                     this.cycleLang(false);
                 }
                 
-                // Check click/touch on OK button
+                // Kiểm tra click/touch vào nút OK
                 else if (this._okButtonRect.contains(x, y)) {
                     SoundManager.playOk();
                     this.processOk();
@@ -503,22 +456,22 @@ if (!Imported.KB_Core) {
             const locale = KBLocalization.locale;
             const flagBitmap = ImageManager.loadSystem("flag_" + locale);
             
-            // Load OK button image (Assumed file name is Button_OK.png)
+            // Tải ảnh nút OK (Giả sử tên file là Button_OK.png)
             if (!this._okBitmap) {
                 this._okBitmap = ImageManager.loadSystem("Button_OK");
             }
             
-            // Listener to ensure redrawing when image is finished loading
+            // Listener để đảm bảo vẽ lại khi ảnh load xong
             const isFlagReady = flagBitmap.isReady();
             const isOkReady = this._okBitmap.isReady();
 
-            // Fix: Only add listener if loading AND no listener is active
+            // Sửa lỗi: Chỉ thêm listener nếu đang loading VÀ chưa có listener nào
             if (!isFlagReady || !isOkReady) {
                 if (!this._assetsLoading) { 
-                    this._assetsLoading = true; // Mark that a listener has been added
+                    this._assetsLoading = true; // Đánh dấu là đã thêm listener
                     
                     const callback = () => {
-                        this._assetsLoading = false; // Reset flag after completion
+                        this._assetsLoading = false; // Reset cờ sau khi hoàn thành
                         if (this.visible) this.refresh();
                     };
                     
@@ -553,7 +506,7 @@ if (!Imported.KB_Core) {
             
             // Draw Left Arrow
             this.drawText(arrowLeft, startX, contentY, this.textWidth(arrowLeft), 'left');
-            // Record left arrow position for Touch
+            // Ghi lại vị trí mũi tên trái cho Touch
             this._leftArrowRect.x = startX;
             this._leftArrowRect.y = contentY;
             this._leftArrowRect.width = this.textWidth(arrowLeft);
@@ -572,32 +525,32 @@ if (!Imported.KB_Core) {
 
             // Draw Right Arrow
             this.drawText(arrowRight, startX, contentY, this.textWidth(arrowRight), 'left');
-            // Record right arrow position for Touch
+            // Ghi lại vị trí mũi tên phải cho Touch
             this._rightArrowRect.x = startX;
             this._rightArrowRect.y = contentY;
             this._rightArrowRect.width = this.textWidth(arrowRight);
             this._rightArrowRect.height = lineHeight;
 
-            // --- 3. Draw CUSTOM OK Button (Using image) ---
+            // --- 3. Draw CUSTOM OK Button (Sử dụng ảnh) ---
             
             if (isOkReady) {
                 const buttonBitmap = this._okBitmap;
                 const buttonW = buttonBitmap.width;
                 const buttonH = buttonBitmap.height;
                 
-                // Center button
+                // Căn giữa nút
                 const okX = (width - buttonW) / 2;
                 const okY = contentY + lineHeight * 2;
                 
-                // Draw button image
+                // Vẽ ảnh nút
                 this.contents.blt(buttonBitmap, 0, 0, buttonW, buttonH, okX, okY);
                 
-                // Draw OK text over the image (Use normal color for visibility)
+                // Vẽ chữ OK lên trên ảnh (Dùng màu chữ trắng để nổi bật)
                 this.changeTextColor(ColorManager.normalColor()); 
-                // Center OK text vertically to the button
+                // Căn giữa chữ OK theo chiều dọc của nút
                 this.drawText(okText, okX, okY + (buttonH - lineHeight) / 2, buttonW, 'center'); 
                 
-                // Record OK button position for Touch
+                // Ghi lại vị trí nút OK cho Touch
                 this._okButtonRect.x = okX;
                 this._okButtonRect.y = okY;
                 this._okButtonRect.width = buttonW;
@@ -605,12 +558,12 @@ if (!Imported.KB_Core) {
                 
                 this.resetTextColor(); 
             } else {
-                // Placeholder position data and draw temporary rectangle if image hasn't loaded
+                // Dữ liệu vị trí dự phòng và vẽ hình chữ nhật tạm thời khi ảnh chưa load
                 const buttonW = 180; 
                 const buttonH = lineHeight * 1.5;
                 const okX = (width - buttonW) / 2;
                 const okY = contentY + lineHeight * 2;
-                // Still draw temporarily so the OK button can be pressed even if the image hasn't loaded
+                // Vẫn vẽ tạm thời để có thể bấm nút OK ngay cả khi ảnh chưa load
                 this.contents.fillRect(okX, okY, buttonW, buttonH, ColorManager.dimColor2());
                 this.drawText(okText, okX, okY, buttonW, 'center');
                 
@@ -637,32 +590,30 @@ if (!Imported.KB_Core) {
         }
     }
 
-    // --- Ensure Manager is initialized before any of its functions are called ---
+    // --- Đảm bảo Manager được khởi tạo trước khi gọi bất kỳ hàm nào của nó ---
     if (!window.KBLocalization) {
         window.KBLocalization = new KB_LocalizationManager();
     }
     
-    // --- 5. SCENE TITLE INTEGRATION (KB_TitleCommands Sync) ---
+    // --- 5. SCENE TITLE UPDATE (FIX MOG NOT HIDING) ---
+    
+    // Thêm chức năng: Kiểm tra liên tục mỗi khung hình
+    const _Scene_Title_update = Scene_Title.prototype.update;
+    Scene_Title.prototype.update = function() {
+        _Scene_Title_update.call(this);
 
-    // ALIAS: Must run after KB_TitleCommands.js has created CommandWindow and Sprites
-    const _Scene_Title_createCommandWindow_alias = Scene_Title.prototype.createCommandWindow;
-    Scene_Title.prototype.createCommandWindow = function() {
-        _Scene_Title_createCommandWindow_alias.call(this);
-
-        // --- STORE REFERENCES FROM KB_TitleCommands ---
-        // Sprites are stored in this._TpictureCom[]
-        // Cursor is stored in this._cursor
-        
-        // Store Command reference
-        if (this._TpictureCom) {
-            this._comSprites = this._TpictureCom;
-        }
-        // Store Cursor reference
-        if (this._cursor) {
-            this._comCursor = this._cursor;
+        // Nếu bảng chọn ngôn ngữ đang hiện
+        if (this._langPicker && this._langPicker.visible) {
+            // Ép buộc ẩn ảnh MOG/KB (cho các plugin không tương thích)
+            if (this._comSprites) {
+                this._comSprites.forEach(s => s.visible = false);
+            }
+            if (this._comCursor) {
+                this._comCursor.visible = false;
+            }
         }
     };
-    
+
     // --- 6. COMMAND INTEGRATION ---
 
     if (showOnTitle) {
@@ -683,17 +634,17 @@ if (!Imported.KB_Core) {
 
     Scene_Title.prototype.createLanguagePicker = function() {
         const rect = this.languagePickerRect();
-        // Correct way to create Window_KBPicker to use the new rect
+        // Sửa lại cách tạo Window_KBPicker để nó dùng rect mới
         this._langPicker = new Window_KBPicker(rect);
         this._langPicker.setOkHandler(this.onPickerOk.bind(this));
         this._langPicker.setCancelHandler(this.onPickerCancel.bind(this));
         this.addWindow(this._langPicker);
     };
 
-    // Change Picker Language window size as requested (Larger)
+    // Thay đổi kích thước cửa sổ Picker Language theo yêu cầu (Lớn hơn)
     Scene_Title.prototype.languagePickerRect = function() {
-        const w = 600; // New width
-        const h = 200; // New height to contain the OK button
+        const w = 600; // Chiều rộng mới
+        const h = 200; // Chiều cao mới để chứa nút OK
         const x = (Graphics.boxWidth - w) / 2;
         const y = (Graphics.boxHeight - h) / 2;
         return new Rectangle(x, y, w, h);
@@ -705,20 +656,12 @@ if (!Imported.KB_Core) {
             this._commandWindow.hide();
             this._commandWindow.deactivate();
 
-            // Hide Background and Title Sprite (Black screen)
+            // Ẩn Background và Title Sprite (Đen màn hình)
             if (this._backSprite1) this._backSprite1.opacity = 0;
             if (this._backSprite2) this._backSprite2.opacity = 0;
             if (this._gameTitleSprite) this._gameTitleSprite.opacity = 0;
 
-            // --- HIDE KB_TitleCommands CONTROLS (Command Sprites and Cursor) ---
-            if (this._comSprites) {
-                this._comSprites.forEach(s => s.visible = false);
-            }
-            if (this._comCursor) {
-                this._comCursor.visible = false;
-            }
-
-            // Show Picker
+            // Hiện Picker
             this._langPicker.refresh();
             this._langPicker.show();
             this._langPicker.activate();
@@ -729,12 +672,24 @@ if (!Imported.KB_Core) {
     };
 
     Scene_Title.prototype.onPickerOk = function() {
-        // 1. Close Picker
+        // 1. Tắt Picker và bật lại UI chính
         this._langPicker.hide();
         this._langPicker.deactivate();
 
-
-        // 2. Proceed to New Game
+        // Hiện lại Background
+        if (this._backSprite1) this._backSprite1.opacity = 255;
+        if (this._backSprite2) this._backSprite2.opacity = 255;
+        if (this._gameTitleSprite) this._gameTitleSprite.opacity = 255;
+        
+        // Hiện lại MOG Sprites
+        if (this._comSprites) {
+            this._comSprites.forEach(s => s.visible = true);
+        }
+        if (this._comCursor) {
+            this._comCursor.visible = true;
+        }
+        
+        // 2. Chuyển sang New Game
         DataManager.setupNewGame();
         this._commandWindow.close();
         this.fadeOutAll();
@@ -748,12 +703,12 @@ if (!Imported.KB_Core) {
         this._commandWindow.show();
         this._commandWindow.activate();
 
-        // Restore Background and Title
+        // Hiện lại Background
         if (this._backSprite1) this._backSprite1.opacity = 255;
         if (this._backSprite2) this._backSprite2.opacity = 255;
         if (this._gameTitleSprite) this._gameTitleSprite.opacity = 255;
         
-        // --- RESTORE KB_TitleCommands CONTROLS ---
+        // Hiện lại MOG Sprites
         if (this._comSprites) {
             this._comSprites.forEach(s => s.visible = true);
         }
@@ -762,9 +717,9 @@ if (!Imported.KB_Core) {
         }
     };
 
-    const _Scene_Title_createCommandWindow_handler = Scene_Title.prototype.createCommandWindow;
+    const _Scene_Title_createCommandWindow = Scene_Title.prototype.createCommandWindow;
     Scene_Title.prototype.createCommandWindow = function() {
-        _Scene_Title_createCommandWindow_handler.call(this);
+        _Scene_Title_createCommandWindow.call(this);
         this._commandWindow.setHandler('language', this.commandLanguage.bind(this));
     };
 
