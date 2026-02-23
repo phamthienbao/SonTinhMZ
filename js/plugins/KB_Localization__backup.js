@@ -1,6 +1,6 @@
 /*:
  * @target MZ
- * @plugindesc [v2.6] Hệ thống đa ngôn ngữ & Giao diện chọn ngôn ngữ (KB Edition).
+ * @plugindesc [v2.5] Hệ thống đa ngôn ngữ & Giao diện chọn ngôn ngữ (KB Edition).
  * @author KB (Dev)
  *
  * @help
@@ -11,20 +11,15 @@
  * | . \ |  _ <  | |__| (_) | (_| (_| | | |/ / (_| || |_| | (_) | | | |
  * |_|\_\|_| \_\ |_____\___/ |___\__,_|_|_/___\__,_| \__|_|\___/|_| |_|
  * * ============================================================================
- * ## GIỚI THIỆU
+ * ## GIỚU THIỆU
  * ============================================================================
  * Plugin độc quyền giúp quản lý đa ngôn ngữ cho dự án game. 
  * Tích hợp tính năng "Language Picker" (Chọn ngôn ngữ) đẹp mắt khi New Game.
  * Tương thích hoàn toàn với KB_TitleCommands (MOG) để ẩn giao diện cũ.
  *
- * * Phiên bản V2.6: Sửa các lỗi sau:
- * * - Thêm onerror handler cho XHR (loadCSV, loadJSON).
- * * - Bảo vệ null safety cho _windowLayer trong setLanguage().
- * * - Sửa getText() để xử lý đúng value rỗng ("").
- * * - CSV delimiter được đưa lên Plugin Manager để cấu hình.
- * * - Sửa parseCSVLine() để xử lý đúng escaped quotes ("").
- * * - Sửa key 'escape' không hợp lệ trong Input.isTriggered().
- * * - Sửa onPickerOk() để gọi đúng luồng chuyển scene của RMMZ.
+ * * Phiên bản V2.5: Cập nhật giao diện Picker Language: Cửa sổ lớn hơn, hỗ trợ
+ * * Touch/Click vào mũi tên đổi ngôn ngữ và nút OK xác nhận. Nút OK dùng ảnh
+ * * tùy chỉnh (yêu cầu file img/system/Button_OK.png).
  *
  * ============================================================================
  * ## HƯỚNG DẪN CÀI ĐẶT (SETUP GUIDE)
@@ -43,7 +38,6 @@
  * - **Available Locales**: Điền các mã ngôn ngữ (ví dụ: vi, en).
  * - **Data Type**: Chọn loại file bạn dùng (CSV hoặc JSON).
  * - **Data Files**: Điền TÊN các file dữ liệu (ví dụ: General, Quests). KHÔNG cần điền .csv hay .json.
- * - **CSV Delimiter**: Dấu phân cách cột trong file CSV (mặc định: ;).
  * * 4. CHUẨN BỊ ẢNH LÁ CỜ & NÚT OK:
  * - Ảnh lá cờ: flag_[MãNgônNgữ].png (Ví dụ: flag_vi.png).
  * - **Ảnh nút OK**: Button_OK.png
@@ -85,12 +79,6 @@
  * @default Languages
  * @type string
  *
- * @param CSV Delimiter
- * @text Dấu Phân Cách CSV
- * @desc Ký tự phân cách cột trong file CSV. Mặc định là dấu chấm phẩy (;). Dùng dấu phẩy (,) nếu cần.
- * @default ;
- * @type string
- *
  * @param --- Tính Năng Giao Diện ---
  * @default
  *
@@ -127,9 +115,6 @@ if (!Imported.KB_Core) {
     const dataType = params['Data Type'].toUpperCase();
     const fileExtension = dataType === 'CSV' ? '.csv' : '.json';
     
-    // [FIX] Delimiter được lấy từ Plugin Manager thay vì hardcode
-    const csvDelimiter = (params['CSV Delimiter'] || ';').trim()[0] || ';';
-
     const dataFilesStr = params['Data Files'] || 'Languages';
     const localesStr = params['Available Locales'] || 'vi,en';
     
@@ -183,14 +168,7 @@ if (!Imported.KB_Core) {
                     if (jsonData) {
                         this.mergeData(jsonData, locale);
                     }
-                } else {
-                    // [FIX] Log lỗi HTTP (404, v.v.)
-                    console.warn(`[KB_Localization] Lỗi HTTP ${xhr.status} khi tải file: ${url}`);
                 }
-            };
-            // [FIX] Xử lý lỗi mạng (file không tồn tại, mất kết nối, v.v.)
-            xhr.onerror = () => {
-                console.warn(`[KB_Localization] Không thể tải file JSON: ${url}`);
             };
             xhr.send();
         }
@@ -199,16 +177,7 @@ if (!Imported.KB_Core) {
             const xhr = new XMLHttpRequest();
             xhr.open('GET', url);
             xhr.onload = () => {
-                if (xhr.status < 400) {
-                    this.parseCSV(xhr.responseText, locale);
-                } else {
-                    // [FIX] Log lỗi HTTP
-                    console.warn(`[KB_Localization] Lỗi HTTP ${xhr.status} khi tải file: ${url}`);
-                }
-            };
-            // [FIX] Xử lý lỗi mạng
-            xhr.onerror = () => {
-                console.warn(`[KB_Localization] Không thể tải file CSV: ${url}`);
+                if (xhr.status < 400) this.parseCSV(xhr.responseText, locale);
             };
             xhr.send();
         }
@@ -249,31 +218,26 @@ if (!Imported.KB_Core) {
                 const row = this.parseCSVLine(lines[i]);
                 if (row.length < 2) continue;
                 const key = row[0].trim();
-                if (!key) continue; // Bỏ qua hàng không có key
                 
-                // [FIX] Lấy giá trị, giữ nguyên chuỗi rỗng thay vì fallback về undefined
-                let val = (row[valueIndex] !== undefined) ? row[valueIndex] : "";
+                // Lấy giá trị từ cột valueIndex
+                let val = row[valueIndex] || "";
                 val = val.replace(/^"|"$/g, '').replace(/""/g, '"');
                 this._data[targetLocale][key] = val;
+                
             }
             this._cache = {};
         }
 
-        // [FIX] parseCSVLine: xử lý đúng escaped quotes ("") và dùng delimiter từ config
+
+        // Thay thế hàm parseCSVLine cũ bằng hàm mới này:
         parseCSVLine(text) {
-            const delimiter = csvDelimiter;
+            const delimiter = ';'; // <--- CẤU HÌNH DẤU PHÂN CÁCH LÀ DẤU CHẤM PHẨY
             const res = [];
-            let start = 0;
-            let inQ = false;
+            let start = 0, inQ = false;
             for (let i = 0; i < text.length; i++) {
-                if (text[i] === '"') {
-                    // Kiểm tra escaped quote ("") - nếu ký tự tiếp theo cũng là " thì bỏ qua
-                    if (inQ && i + 1 < text.length && text[i + 1] === '"') {
-                        i++; // Nhảy qua ký tự " thứ hai
-                    } else {
-                        inQ = !inQ;
-                    }
-                } else if (text[i] === delimiter && !inQ) {
+                if (text[i] === '"') inQ = !inQ;
+                // Kiểm tra delimiter (;) thay vì dấu phẩy (,)
+                else if (text[i] === delimiter && !inQ) { 
                     res.push(text.substring(start, i));
                     start = i + 1;
                 }
@@ -287,11 +251,10 @@ if (!Imported.KB_Core) {
                 this._locale = locale;
                 this._cache = {}; 
                 ConfigManager.save();
-                // [FIX] Bảo vệ null safety cho _windowLayer trước khi truy cập children
-                const scene = SceneManager._scene;
-                const windowLayer = scene && scene._windowLayer;
-                if (windowLayer) {
-                    windowLayer.children.forEach(w => {
+                // Refresh UI khi thay đổi ngôn ngữ
+                if (SceneManager._scene) {
+                    const wins = SceneManager._scene._windowLayer.children;
+                    wins.forEach(w => {
                         if (typeof w.refresh === 'function') w.refresh();
                     });
                 }
@@ -314,11 +277,8 @@ if (!Imported.KB_Core) {
 
         getText(key) {
             const dict = this._data[this._locale];
-            // [FIX] Dùng hasOwnProperty để xử lý đúng trường hợp value là chuỗi rỗng ""
-            if (dict && Object.prototype.hasOwnProperty.call(dict, key)) {
-                return dict[key];
-            }
-            return key;
+            // Trả về giá trị nếu tìm thấy, ngược lại trả về key
+            return (dict && dict[key]) ? dict[key] : key;
         }
 
         process(text) {
@@ -444,8 +404,7 @@ if (!Imported.KB_Core) {
                 } else if (Input.isTriggered('ok')) {
                     SoundManager.playOk();
                     this.processOk();
-                // [FIX] Bỏ 'escape' vì không phải key mapping hợp lệ trong RMMZ, dùng 'cancel' là đủ
-                } else if (Input.isTriggered('cancel')) {
+                } else if (Input.isTriggered('cancel') || Input.isTriggered('escape')) {
                     SoundManager.playCancel();
                     this.processCancel();
                 }
@@ -713,20 +672,24 @@ if (!Imported.KB_Core) {
     };
 
     Scene_Title.prototype.onPickerOk = function() {
-        // 1. Tắt Picker
+        // 1. Tắt Picker và bật lại UI chính
         this._langPicker.hide();
         this._langPicker.deactivate();
 
-        // Hiện lại MOG Sprites nếu có
+        // Hiện lại Background
+        if (this._backSprite1) this._backSprite1.opacity = 255;
+        if (this._backSprite2) this._backSprite2.opacity = 255;
+        if (this._gameTitleSprite) this._gameTitleSprite.opacity = 255;
+        
+        // Hiện lại MOG Sprites
         if (this._comSprites) {
             this._comSprites.forEach(s => s.visible = true);
         }
         if (this._comCursor) {
             this._comCursor.visible = true;
         }
-
-        // [FIX] Gọi đúng luồng chuyển scene của RMMZ: setupNewGame -> close command -> fadeOutAll -> goto Map
-        // Không cần restore background sprites vì sẽ fade out và chuyển scene ngay
+        
+        // 2. Chuyển sang New Game
         DataManager.setupNewGame();
         this._commandWindow.close();
         this.fadeOutAll();
